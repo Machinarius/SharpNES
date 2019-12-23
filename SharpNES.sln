@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29403.142
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpNES.Core", "SharpNES.Core\SharpNES.Core.csproj", "{74A8006D-BDC0-47DA-8F51-638EEFBF2007}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1F36DFC0-B3E5-46A8-A3AC-3DC9924CF496}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpNES.Core.Tests", "SharpNES.Core.Tests\SharpNES.Core.Tests.csproj", "{AD0193A9-9750-4009-B7C2-0260F042C6D0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{74A8006D-BDC0-47DA-8F51-638EEFBF2007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74A8006D-BDC0-47DA-8F51-638EEFBF2007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74A8006D-BDC0-47DA-8F51-638EEFBF2007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74A8006D-BDC0-47DA-8F51-638EEFBF2007}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD0193A9-9750-4009-B7C2-0260F042C6D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD0193A9-9750-4009-B7C2-0260F042C6D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD0193A9-9750-4009-B7C2-0260F042C6D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD0193A9-9750-4009-B7C2-0260F042C6D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CA7169F6-269A-403E-920F-0CBF50D78732}
+	EndGlobalSection
+EndGlobal
