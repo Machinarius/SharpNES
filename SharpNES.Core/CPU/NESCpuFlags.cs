@@ -3,9 +3,10 @@
 namespace SharpNES.Core.CPU {
   [Flags]
   public enum NESCpuFlags : byte {
+    Null = 0,
     CarryBit = 1 << 0,
     Zero = 1 << 1,
-    InterruptsDisable = 1 << 2,
+    DisableInterrupts = 1 << 2,
     DecimalMode = 1 << 3,
     Break = 1 << 4,
     Unused = 1 << 5,

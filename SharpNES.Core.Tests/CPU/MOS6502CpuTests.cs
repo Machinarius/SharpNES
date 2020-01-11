@@ -251,5 +251,47 @@ namespace SharpNES.Core.Tests.CPU {
       Check.That(_subject.ALUInputRegister).IsEqualTo(0);
       Check.That(_subject.ClockCyclesRemaining).IsEqualTo(8);
     }
+
+    [Fact]
+    public void InterruptRequestsMustBeIgnoredWhenTheDisableInterruptsFlagIsSet() {
+      _subject.StatusRegister = NESCpuFlags.DisableInterrupts;
+      _subject.OnInterruptRequested();
+    }
+
+    [Fact]
+    public void InterruptRequestsMustStoreThePcAndStatusIntoTheStackAndSetThePcToTheValueInAKnownMemoryAddress() {
+      // This flag is supposed to be cleared by the implementation
+      _subject.StatusRegister = NESCpuFlags.Break; 
+      _subject.ProgramCounter = 0x2019;
+      _subject.StackPointer = 0x10;
+
+      _mockDataBus
+        .Setup(mock => mock.WriteToMemory(0x0110, 0x20))
+        .Verifiable();
+
+      _mockDataBus
+        .Setup(mock => mock.WriteToMemory(0x010F, 0x19))
+        .Verifiable();
+
+      var expectedStatusValue = (byte)(NESCpuFlags.Unused | NESCpuFlags.DisableInterrupts);
+      _mockDataBus
+        .Setup(mock => mock.WriteToMemory(0x010E, expectedStatusValue))
+        .Verifiable();
+
+      _mockDataBus
+        .Setup(mock => mock.ReadFromMemory(0xFFFE, false))
+        .Returns(0x37);
+
+      _mockDataBus
+        .Setup(mock => mock.ReadFromMemory(0xFFFF, false))
+        .Returns(0x13);
+
+      _subject.OnInterruptRequested();
+
+      Check.That(_subject.ProgramCounter).IsEqualTo(0x1337);
+      Check.That(_subject.StackPointer).IsEqualTo(0xD);
+      Check.That(_subject.ClockCyclesRemaining).IsEqualTo(7);
+      _mockDataBus.Verify();
+    }
   }
 }

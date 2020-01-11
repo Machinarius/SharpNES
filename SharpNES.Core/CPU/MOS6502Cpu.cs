@@ -10,7 +10,7 @@ namespace SharpNES.Core.CPU {
     private readonly IMemoryAddressingModes _addressingModes;
     private readonly IInstructionLookupTable _instructionsTable;
 
-    public NESCpuFlags StatusRegister { get; private set; }
+    public NESCpuFlags StatusRegister { get; set; }
 
     public byte AccumulatorRegister { get; set; }
 
@@ -108,7 +108,31 @@ namespace SharpNES.Core.CPU {
     }
 
     public void OnInterruptRequested() {
-      throw new NotImplementedException();
+      if (StatusRegister.HasFlag(NESCpuFlags.DisableInterrupts)) {
+        return;
+      }
+
+      WriteToDataBus(
+        (ushort)(Constants.InterruptStackPointerBase + StackPointer--), 
+        (byte)((ProgramCounter >> 8) & Constants.Masks.LowByte));
+      WriteToDataBus(
+        (ushort)(Constants.InterruptStackPointerBase + StackPointer--),
+        (byte)(ProgramCounter & Constants.Masks.LowByte));
+
+      SetStatusFlag(NESCpuFlags.Break, false);
+      SetStatusFlag(NESCpuFlags.Unused, true);
+      SetStatusFlag(NESCpuFlags.DisableInterrupts, true);
+      
+      WriteToDataBus(
+        (ushort)(Constants.InterruptStackPointerBase + StackPointer--),
+        (byte)StatusRegister);
+
+      AbsoluteAddress = Constants.InterruptRequestPCAddress;
+      var pcLowBits = ReadFromDataBus(AbsoluteAddress);
+      var pcHighBits = ReadFromDataBus((ushort)(AbsoluteAddress + 1));
+      ProgramCounter = (ushort)((pcHighBits << 8) | pcLowBits);
+
+      _remainingCycles = 7;
     }
 
     public void OnNonMaskableInterruptRequested() {
@@ -123,7 +147,7 @@ namespace SharpNES.Core.CPU {
       return _dataBus.ReadFromMemory(address, false);
     }
 
-    private void SetStatusFlagValue(NESCpuFlags flag, bool value) {
+    private void SetStatusFlag(NESCpuFlags flag, bool value) {
       if (value) {
         StatusRegister |= flag;
       } else {
@@ -131,13 +155,15 @@ namespace SharpNES.Core.CPU {
       }
     }
 
-    private bool GetStatusFlagValue(NESCpuFlags flag) {
-      return (StatusRegister & flag) == flag;
-    }
-
     private class Constants {
       public const ushort StartupAddress = 0xFFFC;
       public const byte StartupStackPointer = 0xFD;
+      public const ushort InterruptStackPointerBase = 0x0100;
+      public const ushort InterruptRequestPCAddress = 0xFFFE;
+
+      public class Masks {
+        public const ushort LowByte = 0x00FF;
+      }
     }
   }
 }
