@@ -7,7 +7,7 @@
     // IMM
     bool Immediate();
     // ZP0
-    bool ZeroPage();
+    bool ZeroPageZero();
     // ZPX
     bool ZeroPageX();
     // ZPY

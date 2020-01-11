@@ -22,7 +22,11 @@ namespace SharpNES.Core.CPU {
 
     public byte StackPointer => throw new NotImplementedException();
 
-    public ushort ProgramCounter { get; private set; }
+    public ushort ProgramCounter { get; set; }
+
+    public ushort AbsoluteAddress { get; set; }
+    
+    public ushort RelativeAddress { get; set; }
 
     public ICpuInstructionExecutor InstructionExecutor => throw new NotImplementedException();
 
@@ -98,7 +102,7 @@ namespace SharpNES.Core.CPU {
       _dataBus.WriteToMemory(address, dataToWrite);
     }
 
-    private byte ReadFromMemory(ushort address) {
+    public byte ReadFromMemory(ushort address) {
       return _dataBus.ReadFromMemory(address, false);
     }
 

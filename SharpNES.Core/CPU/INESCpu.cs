@@ -7,8 +7,10 @@ namespace SharpNES.Core.CPU {
     byte XRegister { get; }
     byte YRegister { get; }
     byte StackPointer { get; }
-    ushort ProgramCounter { get; }
+    ushort ProgramCounter { get; set; }
     byte ALUInputRegister { get; set; }
+    ushort AbsoluteAddress { get; set; }
+    ushort RelativeAddress { get; set; }
 
     ICpuInstructionExecutor InstructionExecutor { get; }
     IMemoryAddressingModes AddressingModes { get; }
@@ -22,5 +24,7 @@ namespace SharpNES.Core.CPU {
     void OnInterruptRequested();
 
     void OnNonMaskableInterruptRequested();
+
+    byte ReadFromMemory(ushort address);
   }
 }

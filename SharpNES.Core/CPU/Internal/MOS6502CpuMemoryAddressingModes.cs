@@ -12,19 +12,36 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool Absolute() {
-      throw new NotImplementedException();
+      var lowBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var highBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      _cpu.AbsoluteAddress = (ushort)((highBits << 8) | lowBits);
+
+      return false;
     }
 
     public bool AbsoluteX() {
-      throw new NotImplementedException();
+      var lowBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var highBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      _cpu.AbsoluteAddress = (ushort)((highBits << 8) | lowBits);
+      _cpu.AbsoluteAddress += _cpu.XRegister;
+
+      var pageChanged = (_cpu.AbsoluteAddress & Masks.HigherByte) != highBits << 8;
+      return pageChanged;
     }
 
     public bool AbsoluteY() {
-      throw new NotImplementedException();
+      var lowBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var highBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      _cpu.AbsoluteAddress = (ushort)((highBits << 8) | lowBits);
+      _cpu.AbsoluteAddress += _cpu.YRegister;
+
+      var pageChanged = (_cpu.AbsoluteAddress & Masks.HigherByte) != highBits << 8;
+      return pageChanged;
     }
 
     public bool Immediate() {
-      throw new NotImplementedException();
+      _cpu.AbsoluteAddress = _cpu.ProgramCounter++;
+      return false;
     }
 
     public bool Implicit() {
@@ -33,31 +50,101 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool Indirect() {
-      throw new NotImplementedException();
+      var pointerLowBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var pointerHighBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var pointerBase = (ushort)((pointerHighBits << 8) | pointerLowBits);
+      ushort highAddress;
+
+      if (pointerLowBits == Masks.LowerByte) {
+        highAddress = (ushort)(pointerBase & Masks.HigherByte);
+      } else {
+        highAddress = (ushort)(pointerBase + 1);
+      }
+
+      var lowValue = _cpu.ReadFromMemory(pointerBase);
+      var highValue = _cpu.ReadFromMemory(highAddress);
+
+      var absoluteAddress = (highValue << 8) | lowValue;
+      _cpu.AbsoluteAddress = (ushort)absoluteAddress;
+
+      return false;
     }
 
     public bool IndirectX() {
-      throw new NotImplementedException();
+      var pointerBase = (ushort)_cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var xRegister = (ushort)_cpu.XRegister;
+      
+      var lowAddress = (ushort)((pointerBase + xRegister) & Masks.LowerByte);
+      var highAddress = (ushort)((pointerBase + (xRegister + 1)) & Masks.LowerByte);
+
+      var lowValue = _cpu.ReadFromMemory(lowAddress);
+      var highValue = _cpu.ReadFromMemory(highAddress);
+      var absoluteAddress = (highValue << 8) | lowValue;
+
+      _cpu.AbsoluteAddress = (ushort)absoluteAddress;
+      return false;
     }
 
     public bool IndirectY() {
-      throw new NotImplementedException();
+      var pointerBase = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+
+      var lowAddress = (ushort)(pointerBase & Masks.LowerByte);
+      var highAddress = (ushort)((pointerBase + 1) & Masks.LowerByte);
+
+      var lowBits = _cpu.ReadFromMemory(lowAddress);
+      var highBits = _cpu.ReadFromMemory(highAddress);
+
+      var absoluteAddress = (highBits << 8) | lowBits;
+      absoluteAddress += _cpu.YRegister;
+      _cpu.AbsoluteAddress = (ushort)absoluteAddress;
+      
+      var pageChanged = (absoluteAddress & Masks.HigherByte) != (highBits << 8);
+      return pageChanged;
     }
 
     public bool Relative() {
-      throw new NotImplementedException();
+      _cpu.RelativeAddress = _cpu.ReadFromMemory(_cpu.ProgramCounter);
+      _cpu.ProgramCounter++;
+
+      // Range: -128 to +127
+      var relOutsideOfRange = (_cpu.RelativeAddress & Masks.EighthHighestBit) > 0;
+      if (relOutsideOfRange) {
+        _cpu.RelativeAddress |= Masks.HigherByte;
+      }
+
+      return false;
     }
 
-    public bool ZeroPage() {
-      throw new NotImplementedException();
+    public bool ZeroPageZero() {
+      _cpu.AbsoluteAddress = _cpu.ReadFromMemory(_cpu.ProgramCounter);
+      _cpu.ProgramCounter++;
+      _cpu.AbsoluteAddress &= Masks.LowerByte;
+
+      return false;
     }
 
     public bool ZeroPageX() {
-      throw new NotImplementedException();
+      var valueAtPc = _cpu.ReadFromMemory(_cpu.ProgramCounter);
+      _cpu.AbsoluteAddress = (ushort)(valueAtPc + _cpu.XRegister);
+      _cpu.ProgramCounter++;
+      _cpu.AbsoluteAddress &= Masks.LowerByte;
+
+      return false;
     }
 
     public bool ZeroPageY() {
-      throw new NotImplementedException();
+      var addressAtPc = _cpu.ReadFromMemory(_cpu.ProgramCounter);
+      _cpu.AbsoluteAddress = (ushort)(addressAtPc + _cpu.YRegister);
+      _cpu.ProgramCounter++;
+      _cpu.AbsoluteAddress &= Masks.LowerByte;
+
+      return false;
+    }
+
+    private static class Masks {
+      public const int EighthHighestBit = 0x80; // Decimal: 128
+      public const int LowerByte = 0x00FF;
+      public const int HigherByte = 0xFF00;
     }
   }
 }
