@@ -12,15 +12,15 @@ namespace SharpNES.Core.CPU {
 
     public NESCpuFlags StatusRegister { get; private set; }
 
-    public byte AccumulatorRegister => throw new NotImplementedException();
+    public byte AccumulatorRegister { get; set; }
 
-    public byte XRegister => throw new NotImplementedException();
+    public byte XRegister { get; set; }
 
-    public byte YRegister => throw new NotImplementedException();
+    public byte YRegister { get; set; }
 
     public byte ALUInputRegister { get; set; }
 
-    public byte StackPointer => throw new NotImplementedException();
+    public byte StackPointer { get; set; }
 
     public ushort ProgramCounter { get; set; }
 
@@ -31,6 +31,8 @@ namespace SharpNES.Core.CPU {
     public ICpuInstructionExecutor InstructionExecutor => throw new NotImplementedException();
 
     public IMemoryAddressingModes AddressingModes => throw new NotImplementedException();
+
+    public int ClockCyclesRemaining => _remainingCycles;
 
     // The last memory address used
     private ushort _absoluteAddress;
@@ -86,8 +88,23 @@ namespace SharpNES.Core.CPU {
       _logger.LogDebug($"Consumed cycle. Remaining cycles: {_remainingCycles}");
     }
 
-    public void OnResetRequested() {
-      throw new NotImplementedException();
+    public void Reset() {
+      AbsoluteAddress = Constants.StartupAddress;
+      var pcLowBits = ReadFromDataBus(AbsoluteAddress);
+      var pcHighBits = ReadFromDataBus(++AbsoluteAddress);
+
+      ProgramCounter = (ushort)((pcHighBits << 8) | pcLowBits);
+      AccumulatorRegister = 0;
+      XRegister = 0;
+      YRegister = 0;
+      StackPointer = Constants.StartupStackPointer;
+      StatusRegister = NESCpuFlags.Unused;
+
+      AbsoluteAddress = 0x0;
+      RelativeAddress = 0x0;
+      ALUInputRegister = 0x0;
+
+      _remainingCycles = 8;
     }
 
     public void OnInterruptRequested() {
@@ -98,7 +115,7 @@ namespace SharpNES.Core.CPU {
       throw new NotImplementedException();
     }
 
-    private void WriteToMemory(ushort address, byte dataToWrite) {
+    public void WriteToDataBus(ushort address, byte dataToWrite) {
       _dataBus.WriteToMemory(address, dataToWrite);
     }
 
@@ -116,6 +133,11 @@ namespace SharpNES.Core.CPU {
 
     private bool GetStatusFlagValue(NESCpuFlags flag) {
       return (StatusRegister & flag) == flag;
+    }
+
+    private class Constants {
+      public const ushort StartupAddress = 0xFFFC;
+      public const byte StartupStackPointer = 0xFD;
     }
   }
 }

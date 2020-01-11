@@ -19,12 +19,13 @@ namespace SharpNES.Core.CPU {
 
     void OnClockTick();
 
-    void OnResetRequested();
+    void Reset();
 
     void OnInterruptRequested();
 
     void OnNonMaskableInterruptRequested();
 
     byte ReadFromDataBus(ushort address);
+    void WriteToDataBus(ushort address, byte dataToWrite);
   }
 }

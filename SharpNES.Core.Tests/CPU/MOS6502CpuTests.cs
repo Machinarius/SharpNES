@@ -189,5 +189,67 @@ namespace SharpNES.Core.Tests.CPU {
 
       Check.That(_subject.ProgramCounter).IsEqualTo(originalPC + 2);
     }
+
+    [Fact]
+    public void ReadingFromTheBusThroughTheCpuMustCallForwardToTheBusWithReadOnlySetToFalse() {
+      ushort mockAddress = 0x3541;
+      byte expectedData = 0x43;
+
+      _mockDataBus
+        .Setup(mock => mock.ReadFromMemory(mockAddress, false))
+        .Returns(expectedData)
+        .Verifiable();
+
+      var actualData = _subject.ReadFromDataBus(mockAddress);
+      Check.That(actualData).IsEqualTo(expectedData);
+
+      _mockDataBus.Verify();
+    }
+
+    [Fact]
+    public void WritingIntoTheDataBusThroughTheCpuMustCallThroughToTheBus() {
+      ushort expectedAddress = 0x3541;
+      byte expectedData = 0x54;
+
+      _mockDataBus
+        .Setup(mock => mock.WriteToMemory(expectedAddress, expectedData))
+        .Verifiable();
+
+      _subject.WriteToDataBus(expectedAddress, expectedData);
+    }
+
+    [Fact]
+    public void ResettingTheCPUMustSetRegistersToKnownValues() {
+      ushort lowPcAddress = 0xFFFC;
+      ushort highPcAddress = 0xFFFD;
+      byte pcValueLow = 0x19;
+      byte pcValueHigh = 0x20;
+
+      ushort expectedPcValue = 0x2019;
+
+      _mockDataBus
+        .Setup(mock => mock.ReadFromMemory(lowPcAddress, It.IsAny<bool>()))
+        .Returns(pcValueLow);
+
+      _mockDataBus
+        .Setup(mock => mock.ReadFromMemory(highPcAddress, It.IsAny<bool>()))
+        .Returns(pcValueHigh);
+
+      _subject.Reset();
+
+      // TODO: The MOS6502 reference states "the mask interrupt flag will be set" when a reset is complete,
+      // but my aim is to replicage Javdix9's code for now; so the Status value is set to the Unused flag
+
+      Check.That(_subject.ProgramCounter).IsEqualTo(expectedPcValue);
+      Check.That(_subject.AccumulatorRegister).IsEqualTo(0);
+      Check.That(_subject.XRegister).IsEqualTo(0);
+      Check.That(_subject.YRegister).IsEqualTo(0);
+      Check.That(_subject.StackPointer).IsEqualTo(0xFD);
+      Check.That(_subject.StatusRegister).IsEqualTo(NESCpuFlags.Unused); // HasFlag could also work here?
+      Check.That(_subject.AbsoluteAddress).IsEqualTo(0);
+      Check.That(_subject.RelativeAddress).IsEqualTo(0);
+      Check.That(_subject.ALUInputRegister).IsEqualTo(0);
+      Check.That(_subject.ClockCyclesRemaining).IsEqualTo(8);
+    }
   }
 }
