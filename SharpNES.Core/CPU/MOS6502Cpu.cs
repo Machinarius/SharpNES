@@ -136,7 +136,27 @@ namespace SharpNES.Core.CPU {
     }
 
     public void OnNonMaskableInterruptRequested() {
-      throw new NotImplementedException();
+      WriteToDataBus(
+        (ushort)(Constants.InterruptStackPointerBase + StackPointer--),
+        (byte)((ProgramCounter >> 8) & Constants.Masks.LowByte));
+      WriteToDataBus(
+        (ushort)(Constants.InterruptStackPointerBase + StackPointer--),
+        (byte)(ProgramCounter & Constants.Masks.LowByte));
+
+      SetStatusFlag(NESCpuFlags.Break, false);
+      SetStatusFlag(NESCpuFlags.Unused, true);
+      SetStatusFlag(NESCpuFlags.DisableInterrupts, true);
+
+      WriteToDataBus(
+        (ushort)(Constants.InterruptStackPointerBase + StackPointer--),
+        (byte)StatusRegister);
+
+      AbsoluteAddress = Constants.NonMaskableInterruptRequestPCAddress;
+      var pcLowBits = ReadFromDataBus(AbsoluteAddress);
+      var pcHighBits = ReadFromDataBus((ushort)(AbsoluteAddress + 1));
+      ProgramCounter = (ushort)((pcHighBits << 8) | pcLowBits);
+
+      _remainingCycles = 8;
     }
 
     public void WriteToDataBus(ushort address, byte dataToWrite) {
@@ -160,6 +180,7 @@ namespace SharpNES.Core.CPU {
       public const byte StartupStackPointer = 0xFD;
       public const ushort InterruptStackPointerBase = 0x0100;
       public const ushort InterruptRequestPCAddress = 0xFFFE;
+      public const ushort NonMaskableInterruptRequestPCAddress = 0xFFFA;
 
       public class Masks {
         public const ushort LowByte = 0x00FF;
