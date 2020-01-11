@@ -12,16 +12,16 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool Absolute() {
-      var lowBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
-      var highBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var lowBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
+      var highBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       _cpu.AbsoluteAddress = (ushort)((highBits << 8) | lowBits);
 
       return false;
     }
 
     public bool AbsoluteX() {
-      var lowBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
-      var highBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var lowBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
+      var highBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       _cpu.AbsoluteAddress = (ushort)((highBits << 8) | lowBits);
       _cpu.AbsoluteAddress += _cpu.XRegister;
 
@@ -30,8 +30,8 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool AbsoluteY() {
-      var lowBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
-      var highBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var lowBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
+      var highBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       _cpu.AbsoluteAddress = (ushort)((highBits << 8) | lowBits);
       _cpu.AbsoluteAddress += _cpu.YRegister;
 
@@ -50,8 +50,8 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool Indirect() {
-      var pointerLowBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
-      var pointerHighBits = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var pointerLowBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
+      var pointerHighBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       var pointerBase = (ushort)((pointerHighBits << 8) | pointerLowBits);
       ushort highAddress;
 
@@ -61,8 +61,8 @@ namespace SharpNES.Core.CPU.Internal {
         highAddress = (ushort)(pointerBase + 1);
       }
 
-      var lowValue = _cpu.ReadFromMemory(pointerBase);
-      var highValue = _cpu.ReadFromMemory(highAddress);
+      var lowValue = _cpu.ReadFromDataBus(pointerBase);
+      var highValue = _cpu.ReadFromDataBus(highAddress);
 
       var absoluteAddress = (highValue << 8) | lowValue;
       _cpu.AbsoluteAddress = (ushort)absoluteAddress;
@@ -71,14 +71,14 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool IndirectX() {
-      var pointerBase = (ushort)_cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var pointerBase = (ushort)_cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       var xRegister = (ushort)_cpu.XRegister;
       
       var lowAddress = (ushort)((pointerBase + xRegister) & Masks.LowerByte);
       var highAddress = (ushort)((pointerBase + (xRegister + 1)) & Masks.LowerByte);
 
-      var lowValue = _cpu.ReadFromMemory(lowAddress);
-      var highValue = _cpu.ReadFromMemory(highAddress);
+      var lowValue = _cpu.ReadFromDataBus(lowAddress);
+      var highValue = _cpu.ReadFromDataBus(highAddress);
       var absoluteAddress = (highValue << 8) | lowValue;
 
       _cpu.AbsoluteAddress = (ushort)absoluteAddress;
@@ -86,13 +86,13 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool IndirectY() {
-      var pointerBase = _cpu.ReadFromMemory(_cpu.ProgramCounter++);
+      var pointerBase = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
 
       var lowAddress = (ushort)(pointerBase & Masks.LowerByte);
       var highAddress = (ushort)((pointerBase + 1) & Masks.LowerByte);
 
-      var lowBits = _cpu.ReadFromMemory(lowAddress);
-      var highBits = _cpu.ReadFromMemory(highAddress);
+      var lowBits = _cpu.ReadFromDataBus(lowAddress);
+      var highBits = _cpu.ReadFromDataBus(highAddress);
 
       var absoluteAddress = (highBits << 8) | lowBits;
       absoluteAddress += _cpu.YRegister;
@@ -103,7 +103,7 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool Relative() {
-      _cpu.RelativeAddress = _cpu.ReadFromMemory(_cpu.ProgramCounter);
+      _cpu.RelativeAddress = _cpu.ReadFromDataBus(_cpu.ProgramCounter);
       _cpu.ProgramCounter++;
 
       // Range: -128 to +127
@@ -116,7 +116,7 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool ZeroPageZero() {
-      _cpu.AbsoluteAddress = _cpu.ReadFromMemory(_cpu.ProgramCounter);
+      _cpu.AbsoluteAddress = _cpu.ReadFromDataBus(_cpu.ProgramCounter);
       _cpu.ProgramCounter++;
       _cpu.AbsoluteAddress &= Masks.LowerByte;
 
@@ -124,7 +124,7 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool ZeroPageX() {
-      var valueAtPc = _cpu.ReadFromMemory(_cpu.ProgramCounter);
+      var valueAtPc = _cpu.ReadFromDataBus(_cpu.ProgramCounter);
       _cpu.AbsoluteAddress = (ushort)(valueAtPc + _cpu.XRegister);
       _cpu.ProgramCounter++;
       _cpu.AbsoluteAddress &= Masks.LowerByte;
@@ -133,7 +133,7 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool ZeroPageY() {
-      var addressAtPc = _cpu.ReadFromMemory(_cpu.ProgramCounter);
+      var addressAtPc = _cpu.ReadFromDataBus(_cpu.ProgramCounter);
       _cpu.AbsoluteAddress = (ushort)(addressAtPc + _cpu.YRegister);
       _cpu.ProgramCounter++;
       _cpu.AbsoluteAddress &= Masks.LowerByte;

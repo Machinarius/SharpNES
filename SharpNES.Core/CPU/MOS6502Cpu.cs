@@ -70,7 +70,7 @@ namespace SharpNES.Core.CPU {
       if (_remainingCycles == 0) { 
         _logger.LogInformation("Fetching next instruction");
 
-        _currentOpCode = ReadFromMemory(ProgramCounter++);
+        _currentOpCode = ReadFromDataBus(ProgramCounter++);
         var instruction = _instructionsTable.GetInstructionForOpCode(_currentOpCode);
         _remainingCycles = instruction.CycleCount;
 
@@ -102,7 +102,7 @@ namespace SharpNES.Core.CPU {
       _dataBus.WriteToMemory(address, dataToWrite);
     }
 
-    public byte ReadFromMemory(ushort address) {
+    public byte ReadFromDataBus(ushort address) {
       return _dataBus.ReadFromMemory(address, false);
     }
 

@@ -60,7 +60,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupGet(mock => mock.ProgramCounter).Returns(mockPc);
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPc))
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPc))
         .Returns(valueAtPc);
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
       _mockCpu.SetupSet(mock => mock.AbsoluteAddress = valueAtPc)
@@ -83,7 +83,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupGet(mock => mock.ProgramCounter).Returns(mockPc);
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPc))
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPc))
         .Returns(valueAtPc);
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
       _mockCpu.SetupSet(mock => mock.AbsoluteAddress = expectedAddress)
@@ -106,7 +106,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupGet(mock => mock.ProgramCounter).Returns(mockPc);
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPc))
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPc))
         .Returns(valueAtPc);
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
       _mockCpu.SetupSet(mock => mock.AbsoluteAddress = expectedAddress)
@@ -126,7 +126,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupGet(mock => mock.ProgramCounter).Returns(mockPc);
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPc))
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPc))
         .Returns(valueAtPc);
       _mockCpu.SetupProperty(mock => mock.RelativeAddress);
       _mockCpu.SetupSet(mock => mock.RelativeAddress = valueAtPc)
@@ -147,7 +147,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupGet(mock => mock.ProgramCounter).Returns(mockPc);
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPc))
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPc))
         .Returns(valueAtPc);
       _mockCpu.SetupProperty(mock => mock.RelativeAddress);
       _mockCpu.SetupSet(mock => mock.RelativeAddress = expectedAddress)
@@ -172,8 +172,8 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(firstMockPc)).Returns(firstValueAtPc);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(secondMockPc)).Returns(secondValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(firstMockPc)).Returns(firstValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(secondMockPc)).Returns(secondValueAtPc);
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
 
       var requiresMoreCycles = _subject.Absolute();
@@ -201,8 +201,8 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(firstMockPc)).Returns(firstValueAtPc);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(secondMockPc)).Returns(secondValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(firstMockPc)).Returns(firstValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(secondMockPc)).Returns(secondValueAtPc);
 
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
 
@@ -231,8 +231,8 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(firstMockPc)).Returns(firstValueAtPc);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(secondMockPc)).Returns(secondValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(firstMockPc)).Returns(firstValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(secondMockPc)).Returns(secondValueAtPc);
 
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
 
@@ -261,8 +261,8 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(firstMockPc)).Returns(firstValueAtPc);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(secondMockPc)).Returns(secondValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(firstMockPc)).Returns(firstValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(secondMockPc)).Returns(secondValueAtPc);
 
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
 
@@ -291,8 +291,8 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(firstMockPc)).Returns(firstValueAtPc);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(secondMockPc)).Returns(secondValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(firstMockPc)).Returns(firstValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(secondMockPc)).Returns(secondValueAtPc);
 
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
 
@@ -322,10 +322,10 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(firstMockPc)).Returns(firstValueAtPc);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(secondMockPc)).Returns(secondValueAtPc);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedPointer)).Returns(pointerValue);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedPointerOffset)).Returns(pointerOffsetValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(firstMockPc)).Returns(firstValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(secondMockPc)).Returns(secondValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedPointer)).Returns(pointerValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedPointerOffset)).Returns(pointerOffsetValue);
 
       _mockCpu.SetupSet(mock => mock.AbsoluteAddress = expectedAbsoluteAddress)
         .Verifiable();
@@ -354,10 +354,10 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(firstMockPc)).Returns(firstValueAtPc);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(secondMockPc)).Returns(secondValueAtPc);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedPointer)).Returns(pointerValue);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedHighAddress)).Returns(highAddressValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(firstMockPc)).Returns(firstValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(secondMockPc)).Returns(secondValueAtPc);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedPointer)).Returns(pointerValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedHighAddress)).Returns(highAddressValue);
 
       _mockCpu.SetupSet(mock => mock.AbsoluteAddress = expectedAbsoluteAddress)
         .Verifiable();
@@ -386,9 +386,9 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPc)).Returns(mockPointerBase);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedLowAddress)).Returns(lowValue);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedHighAddress)).Returns(highValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPc)).Returns(mockPointerBase);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedLowAddress)).Returns(lowValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedHighAddress)).Returns(highValue);
 
       _mockCpu.SetupSet(mock => mock.AbsoluteAddress = expectedAbsoluteAddress)
         .Verifiable();
@@ -417,9 +417,9 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPc)).Returns(mockPointerBase);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedLowAddress)).Returns(lowValue);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedHighAddress)).Returns(highValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPc)).Returns(mockPointerBase);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedLowAddress)).Returns(lowValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedHighAddress)).Returns(highValue);
 
       _mockCpu.SetupSet(mock => mock.AbsoluteAddress = expectedAbsoluteAddress)
         .Verifiable();
@@ -447,9 +447,9 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPc)).Returns(mockPointerBase);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPointerBase)).Returns(lowValue);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedHighAddress)).Returns(highValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPc)).Returns(mockPointerBase);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPointerBase)).Returns(lowValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedHighAddress)).Returns(highValue);
 
       _mockCpu.SetupSet(mock => mock.AbsoluteAddress = expectedAbsoluteAddress)
         .Verifiable();
@@ -477,9 +477,9 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPc)).Returns(mockPointerBase);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPointerBase)).Returns(lowValue);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedHighAddress)).Returns(highValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPc)).Returns(mockPointerBase);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPointerBase)).Returns(lowValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedHighAddress)).Returns(highValue);
 
       _mockCpu.SetupSet(mock => mock.AbsoluteAddress = expectedAbsoluteAddress)
         .Verifiable();
@@ -507,9 +507,9 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupSet(mock => mock.ProgramCounter = expectedPc)
         .Verifiable();
 
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPc)).Returns(mockPointerBase);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(mockPointerBase)).Returns(lowValue);
-      _mockCpu.Setup(mock => mock.ReadFromMemory(expectedHighAddress)).Returns(highValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPc)).Returns(mockPointerBase);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(mockPointerBase)).Returns(lowValue);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(expectedHighAddress)).Returns(highValue);
 
       _mockCpu.SetupSet(mock => mock.AbsoluteAddress = expectedAbsoluteAddress)
         .Verifiable();

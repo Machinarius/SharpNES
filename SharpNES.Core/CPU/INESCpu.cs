@@ -25,6 +25,6 @@ namespace SharpNES.Core.CPU {
 
     void OnNonMaskableInterruptRequested();
 
-    byte ReadFromMemory(ushort address);
+    byte ReadFromDataBus(ushort address);
   }
 }
