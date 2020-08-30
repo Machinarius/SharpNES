@@ -175,6 +175,10 @@ namespace SharpNES.Core.CPU {
       }
     }
 
+    public void ReadALUInputRegister() {
+      throw new NotImplementedException();
+    }
+
     private class Constants {
       public const ushort StartupAddress = 0xFFFC;
       public const byte StartupStackPointer = 0xFD;

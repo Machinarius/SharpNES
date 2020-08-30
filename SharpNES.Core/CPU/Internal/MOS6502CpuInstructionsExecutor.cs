@@ -3,16 +3,47 @@ using Microsoft.Extensions.Logging;
 
 namespace SharpNES.Core.CPU.Internal {
   public class MOS6502CpuInstructionExecutor : ICpuInstructionExecutor {
-    private readonly MOS6502Cpu _cpu;
+    private readonly INESCpu _cpu;
     private readonly ILogger<MOS6502CpuInstructionExecutor> _logger;
 
-    public MOS6502CpuInstructionExecutor(MOS6502Cpu cpu, ILogger<MOS6502CpuInstructionExecutor> logger) {
+    public MOS6502CpuInstructionExecutor(INESCpu cpu, ILogger<MOS6502CpuInstructionExecutor> logger) {
       _cpu = cpu ?? throw new ArgumentNullException(nameof(cpu));
       _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public bool AddWithCarry() {
-      throw new NotImplementedException();
+      _cpu.ReadALUInputRegister();
+
+      var addResult = _cpu.ALUInputRegister + _cpu.AccumulatorRegister +
+         (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit) ? 1 : 0);
+      var carryBit = addResult > 0xFF;
+      var zeroBit = (addResult & 0x00FF) == 0;
+      var negativeBit = Convert.ToBoolean(addResult & 0x80);
+      var overflowBit = Convert.ToBoolean(
+        (~(_cpu.AccumulatorRegister ^ _cpu.ALUInputRegister) & (_cpu.AccumulatorRegister ^ addResult)) & 0x0080
+      );
+
+      var resultFlags = _cpu.StatusRegister;
+      if (carryBit) {
+        resultFlags &= NESCpuFlags.CarryBit;
+      }
+
+      if (zeroBit) {
+        resultFlags &= NESCpuFlags.Zero;
+      }
+
+      if (negativeBit) {
+        resultFlags &= NESCpuFlags.Negative;
+      }
+
+      if (overflowBit) {
+        resultFlags &= NESCpuFlags.Overflow;
+      }
+
+      _cpu.StatusRegister = resultFlags;
+      _cpu.AccumulatorRegister = Convert.ToByte(addResult & 0x00FF);
+
+      return true;
     }
 
     public bool AndWithAccumulator() {
