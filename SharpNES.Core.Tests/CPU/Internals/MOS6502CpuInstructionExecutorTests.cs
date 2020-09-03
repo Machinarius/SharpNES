@@ -78,6 +78,42 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       Check.That(requiresMoreCycles).IsTrue();
     }
 
+    [Theory]
+    [ClassData(typeof(SubtractWithCarryTestData))]
+    public void SubtractithCarryMustSetRegistersAndFlagsCorrectly(
+      byte accumulatorValue, byte memoryValue, short expectedResult,
+      bool expectedCarry, bool expectedOverflow, bool expectedZero,
+      bool expectedNegative
+    ) {
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Verifiable();
+      _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns(memoryValue);
+      _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, accumulatorValue);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
+
+      var expectedFlags = NESCpuFlags.Null;
+      if (expectedCarry) {
+        expectedFlags &= NESCpuFlags.CarryBit;
+      }
+
+      if (expectedOverflow) {
+        expectedFlags &= NESCpuFlags.Overflow;
+      }
+
+      if (expectedZero) {
+        expectedFlags &= NESCpuFlags.Zero;
+      }
+
+      if (expectedNegative) {
+        expectedFlags &= NESCpuFlags.Negative;
+      }
+
+      _subject.SubtractWithCarry();
+      Check.That(_mockCpu.Object.AccumulatorRegister).Equals(Convert.ToByte(expectedResult & 0x00FF));
+      Check.That(_mockCpu.Object.StatusRegister).Equals(expectedFlags);
+
+      _mockCpu.Verify();
+    }
+
     // http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
     private class AddWithCarryTestData: IEnumerable<object[]> {
       public IEnumerator<object[]> GetEnumerator() {
@@ -106,7 +142,42 @@ namespace SharpNES.Core.Tests.CPU.Internals {
           (byte)208, (byte)208, (short)416, true, false, false, true
         };
         yield return new object[] {
-          (byte)0, (byte)0, (short)0, true, false, true, false
+          (byte)0, (byte)0, (short)0, false, false, true, false
+        };
+      }
+
+      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+    private class SubtractWithCarryTestData: IEnumerable<object[]> {
+      public IEnumerator<object[]> GetEnumerator() {
+        // A, M, A_r, C, V, Z, N 
+        yield return new object[] {
+          (byte)80, (byte)240, (short)96, false, false, false, false
+        };
+        yield return new object[] {
+          (byte)80, (byte)176, (short)160, false, true, false, true
+        };
+        yield return new object[] {
+          (byte) 80, (byte) 112, (short) 224, false, false, false, true
+        };
+        yield return new object[] {
+          (byte)80, (byte)48, (short)32, true, false, false, false
+        };
+        yield return new object[] {
+          (byte)208, (byte)240, (short)224, false, false, false, true
+        };
+        yield return new object[] {
+          (byte)208, (byte)176, (short)32, true, false, false, false
+        };
+        yield return new object[] {
+          (byte)208, (byte)112, (short)96, true, true, false, false
+        };
+        yield return new object[] {
+          (byte)208, (byte)48, (short)160, true, false, false, true
+        };
+        yield return new object[] {
+          (byte)0, (byte)0, (short)0, false, false, true, false
         };
       }
 
