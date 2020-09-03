@@ -16,11 +16,11 @@ namespace SharpNES.Core.CPU.Internal {
 
       var addResult = _cpu.ALUInputRegister + _cpu.AccumulatorRegister +
          (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit) ? 1 : 0);
-      var carryBit = addResult > 0xFF;
-      var zeroBit = (addResult & 0x00FF) == 0;
-      var negativeBit = Convert.ToBoolean(addResult & 0x80);
+      var carryBit = addResult > byte.MaxValue;
+      var zeroBit = (addResult & Masks.LowerBits) == 0;
+      var negativeBit = Convert.ToBoolean(addResult & Masks.SignBit);
       var overflowBit = Convert.ToBoolean(
-        (~(_cpu.AccumulatorRegister ^ _cpu.ALUInputRegister) & (_cpu.AccumulatorRegister ^ addResult)) & 0x0080
+        (~(_cpu.AccumulatorRegister ^ _cpu.ALUInputRegister) & (_cpu.AccumulatorRegister ^ addResult)) & Masks.SignBit
       );
 
       var resultFlags = _cpu.StatusRegister;
@@ -41,7 +41,7 @@ namespace SharpNES.Core.CPU.Internal {
       }
 
       _cpu.StatusRegister = resultFlags;
-      _cpu.AccumulatorRegister = Convert.ToByte(addResult & 0x00FF);
+      _cpu.AccumulatorRegister = Convert.ToByte(addResult & Masks.LowerBits);
 
       return true;
     }
@@ -247,14 +247,14 @@ namespace SharpNES.Core.CPU.Internal {
 
       // TODO: Extract the logic beyond the 2's complement into a common function
       // for ADC and SBC - Everything beyond 2's complement is addition
-      var twosComplement = (_cpu.ALUInputRegister ^ 0x00FF) + 1;
+      var twosComplement = (_cpu.ALUInputRegister ^ Masks.LowerBits) + 1;
       var subtractResult = twosComplement + _cpu.AccumulatorRegister +
          (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit) ? 1 : 0);
-      var carryBit = subtractResult > 0xFF;
-      var zeroBit = (subtractResult & 0x00FF) == 0;
-      var negativeBit = Convert.ToBoolean(subtractResult & 0x80);
+      var carryBit = subtractResult > byte.MaxValue;
+      var zeroBit = (subtractResult & Masks.LowerBits) == 0;
+      var negativeBit = Convert.ToBoolean(subtractResult & Masks.SignBit);
       var overflowBit = Convert.ToBoolean(
-        (~(_cpu.AccumulatorRegister ^ _cpu.ALUInputRegister) & (_cpu.AccumulatorRegister ^ subtractResult)) & 0x0080
+        (~(_cpu.AccumulatorRegister ^ _cpu.ALUInputRegister) & (_cpu.AccumulatorRegister ^ subtractResult)) & Masks.SignBit
       );
 
       var resultFlags = _cpu.StatusRegister;
@@ -302,6 +302,12 @@ namespace SharpNES.Core.CPU.Internal {
 
     public bool TransferYToAccumulator() {
       throw new NotImplementedException();
+    }
+
+    private static class Masks {
+      public const int HigherBits = 0xFF00;
+      public const int LowerBits = 0x00FF;
+      public const int SignBit = 0x80;
     }
   }
 }
