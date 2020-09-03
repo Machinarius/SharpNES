@@ -243,7 +243,41 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool SubtractWithCarry() {
-      throw new NotImplementedException();
+      _cpu.ReadALUInputRegister();
+
+      // TODO: Extract the logic beyond the 2's complement into a common function
+      // for ADC and SBC - Everything beyond 2's complement is addition
+      var twosComplement = (_cpu.ALUInputRegister ^ 0x00FF) + 1;
+      var subtractResult = twosComplement + _cpu.AccumulatorRegister +
+         (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit) ? 1 : 0);
+      var carryBit = subtractResult > 0xFF;
+      var zeroBit = (subtractResult & 0x00FF) == 0;
+      var negativeBit = Convert.ToBoolean(subtractResult & 0x80);
+      var overflowBit = Convert.ToBoolean(
+        (~(_cpu.AccumulatorRegister ^ _cpu.ALUInputRegister) & (_cpu.AccumulatorRegister ^ subtractResult)) & 0x0080
+      );
+
+      var resultFlags = _cpu.StatusRegister;
+      if (carryBit) {
+        resultFlags &= NESCpuFlags.CarryBit;
+      }
+
+      if (zeroBit) {
+        resultFlags &= NESCpuFlags.Zero;
+      }
+
+      if (negativeBit) {
+        resultFlags &= NESCpuFlags.Negative;
+      }
+
+      if (overflowBit) {
+        resultFlags &= NESCpuFlags.Overflow;
+      }
+
+      _cpu.StatusRegister = resultFlags;
+      _cpu.AccumulatorRegister = Convert.ToByte(subtractResult & 0x00FF);
+
+      return true;
     }
 
     public bool TransferAccumulatorToX() {

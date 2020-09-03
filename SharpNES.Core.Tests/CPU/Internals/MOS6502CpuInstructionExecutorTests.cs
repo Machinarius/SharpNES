@@ -80,7 +80,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
 
     [Theory]
     [ClassData(typeof(SubtractWithCarryTestData))]
-    public void SubtractithCarryMustSetRegistersAndFlagsCorrectly(
+    public void SubtractWithCarryMustSetRegistersAndFlagsCorrectly(
       byte accumulatorValue, byte memoryValue, short expectedResult,
       bool expectedCarry, bool expectedOverflow, bool expectedZero,
       bool expectedNegative
@@ -114,9 +114,34 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu.Verify();
     }
 
-    // http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
+    [Fact]
+    public void SubtractWithCarryMustIncludeTheCarryBit() {
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Verifiable();
+      _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns((byte)0);
+      _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.CarryBit);
+
+      // I am definitely suspicious of this 1 here.
+      // This may be a bug.
+      _subject.SubtractWithCarry();
+      Check.That(_mockCpu.Object.AccumulatorRegister).Equals(Convert.ToByte(1));
+    }
+
+    [Fact]
+    public void SubtractWithCarryMustAlwaysRequireAnAdditionalCycle() {
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Verifiable();
+      _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns((byte)0);
+      _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
+
+      var requiresMoreCycles = _subject.SubtractWithCarry();
+      Check.That(requiresMoreCycles).IsTrue();
+    }
+
+    // Taken from http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
     private class AddWithCarryTestData: IEnumerable<object[]> {
       public IEnumerator<object[]> GetEnumerator() {
+        // A, M, A_r, C, V, Z, N 
         yield return new object[] {
           (byte)80, (byte)16, (short)96, false, false, false, false
         };
@@ -149,6 +174,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
+    // Taken from http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
     private class SubtractWithCarryTestData: IEnumerable<object[]> {
       public IEnumerator<object[]> GetEnumerator() {
         // A, M, A_r, C, V, Z, N 
