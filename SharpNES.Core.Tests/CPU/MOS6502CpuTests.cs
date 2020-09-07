@@ -2,6 +2,7 @@
 using Moq;
 using NFluent;
 using SharpNES.Core.CPU;
+using SharpNES.Core.CPU.Exceptions;
 using SharpNES.Core.DataBus;
 using Xunit;
 
@@ -328,6 +329,28 @@ namespace SharpNES.Core.Tests.CPU {
       Check.That(_subject.StackPointer).IsEqualTo(0xD);
       Check.That(_subject.ClockCyclesRemaining).IsEqualTo(8);
       _mockDataBus.Verify();
+    }
+
+    [Fact]
+    public void ReadALUInputRegisterMustReadTheValueAtTheAbsoluteAddress() {
+      _subject.AbsoluteAddress = 0x2F;
+      _mockDataBus
+        .Setup(mock => mock.ReadFromMemory(0x2F, false))
+        .Returns(0x45)
+        .Verifiable();
+
+      var actualInputRegister = _subject.ReadALUInputRegister();
+      Check.That(actualInputRegister).IsEqualTo(0x45);
+      _mockDataBus.Verify();
+    }
+
+    [Fact]
+    public void ReadALUInputRegisterMustThrowAnExceptionWhenTheAddressingModeIsImplicit() {
+      var instructionField = _subject.GetType().GetField("_currentInstruction", 
+        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+      instructionField.SetValue(_subject, new CpuInstruction("TST", () => false, () => false, 1, true));
+
+      Check.ThatCode(() => _subject.ReadALUInputRegister()).Throws<AddressingModeException>();
     }
   }
 }

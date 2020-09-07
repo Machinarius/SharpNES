@@ -34,6 +34,6 @@ namespace SharpNES.Core.CPU {
     byte ReadFromDataBus(ushort address);
     void WriteToDataBus(ushort address, byte dataToWrite);
 
-    void ReadALUInputRegister();
+    byte ReadALUInputRegister();
   }
 }

@@ -27,7 +27,11 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       bool expectedCarry, bool expectedOverflow, bool expectedZero,
       bool expectedNegative
     ) {
-      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Verifiable();
+      _mockCpu
+        .Setup(mock => mock.ReadALUInputRegister())
+        .Returns(memoryValue)
+        .Verifiable();
+
       _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns(memoryValue);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, accumulatorValue);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
@@ -58,7 +62,11 @@ namespace SharpNES.Core.Tests.CPU.Internals {
 
     [Fact]
     public void AddWithCarryMustIncludeTheCarryBit() {
-      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Verifiable();
+      _mockCpu
+        .Setup(mock => mock.ReadALUInputRegister())
+        .Returns(0)
+        .Verifiable();
+
       _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns((byte)0);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.CarryBit);
@@ -69,7 +77,11 @@ namespace SharpNES.Core.Tests.CPU.Internals {
 
     [Fact]
     public void AddWithCarryMustAlwaysRequireAnAdditionalCycle() {
-      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Verifiable();
+      _mockCpu
+        .Setup(mock => mock.ReadALUInputRegister())
+        .Returns(0)
+        .Verifiable();
+
       _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns((byte)0);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
@@ -85,7 +97,11 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       bool expectedCarry, bool expectedOverflow, bool expectedZero,
       bool expectedNegative
     ) {
-      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Verifiable();
+      _mockCpu
+        .Setup(mock => mock.ReadALUInputRegister())
+        .Returns(0)
+        .Verifiable();
+
       _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns(memoryValue);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, accumulatorValue);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
@@ -116,7 +132,11 @@ namespace SharpNES.Core.Tests.CPU.Internals {
 
     [Fact]
     public void SubtractWithCarryMustIncludeTheCarryBit() {
-      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Verifiable();
+      _mockCpu
+        .Setup(mock => mock.ReadALUInputRegister())
+        .Returns(0)
+        .Verifiable();
+
       _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns((byte)0);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.CarryBit);
@@ -129,7 +149,11 @@ namespace SharpNES.Core.Tests.CPU.Internals {
 
     [Fact]
     public void SubtractWithCarryMustAlwaysRequireAnAdditionalCycle() {
-      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Verifiable();
+      _mockCpu
+        .Setup(mock => mock.ReadALUInputRegister())
+        .Returns(0)
+        .Verifiable();
+
       _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns((byte)0);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);

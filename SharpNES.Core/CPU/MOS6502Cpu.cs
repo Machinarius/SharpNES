@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SharpNES.Core.CPU.Exceptions;
 using SharpNES.Core.DataBus;
 using System;
 
@@ -32,16 +33,14 @@ namespace SharpNES.Core.CPU {
 
     public IMemoryAddressingModes AddressingModes => throw new NotImplementedException();
 
-    public int ClockCyclesRemaining => _remainingCycles;
+    public int ClockCyclesRemaining { get; private set; }
 
     // The last memory address used
     private ushort _absoluteAddress;
     // The last address JMP'd to
     private ushort _relativeAddress;
-    // Current OpCode being executed
-    private byte _currentOpCode;
-    // The remaining cycles for the current OpCode
-    private int _remainingCycles;
+
+    private CpuInstruction _currentInstruction;
 
     public MOS6502Cpu(
         ILogger<MOS6502Cpu> logger,
@@ -69,23 +68,23 @@ namespace SharpNES.Core.CPU {
     public void OnClockTick() {
       _logger.LogInformation("Beginning clock tick");
 
-      if (_remainingCycles == 0) { 
+      if (ClockCyclesRemaining == 0) { 
         _logger.LogInformation("Fetching next instruction");
 
-        _currentOpCode = ReadFromDataBus(ProgramCounter++);
-        var instruction = _instructionsTable.GetInstructionForOpCode(_currentOpCode);
-        _remainingCycles = instruction.CycleCount;
+        var currentOpCode = ReadFromDataBus(ProgramCounter++);
+        _currentInstruction = _instructionsTable.GetInstructionForOpCode(currentOpCode);
+        ClockCyclesRemaining = _currentInstruction.CycleCount;
 
         var additionalCycles = 0;
-        additionalCycles += instruction.AddressingModeFunc() ? 1 : 0;
-        additionalCycles += instruction.OperatorFunc() ? 1 : 0;
-        _remainingCycles += additionalCycles;
+        additionalCycles += _currentInstruction.AddressingModeFunc() ? 1 : 0;
+        additionalCycles += _currentInstruction.OperatorFunc() ? 1 : 0;
+        ClockCyclesRemaining += additionalCycles;
 
-        _logger.LogInformation($"Executing {instruction.Name} for {_remainingCycles} cycles");
+        _logger.LogInformation($"Executing {_currentInstruction.Name} for {ClockCyclesRemaining} cycles");
       }
 
-      _remainingCycles -= 1;
-      _logger.LogDebug($"Consumed cycle. Remaining cycles: {_remainingCycles}");
+      ClockCyclesRemaining -= 1;
+      _logger.LogDebug($"Consumed cycle. Remaining cycles: {ClockCyclesRemaining}");
     }
 
     public void Reset() {
@@ -104,7 +103,7 @@ namespace SharpNES.Core.CPU {
       RelativeAddress = 0x0;
       ALUInputRegister = 0x0;
 
-      _remainingCycles = 8;
+      ClockCyclesRemaining = 8;
     }
 
     public void OnInterruptRequested() {
@@ -132,7 +131,7 @@ namespace SharpNES.Core.CPU {
       var pcHighBits = ReadFromDataBus((ushort)(AbsoluteAddress + 1));
       ProgramCounter = (ushort)((pcHighBits << 8) | pcLowBits);
 
-      _remainingCycles = 7;
+      ClockCyclesRemaining = 7;
     }
 
     public void OnNonMaskableInterruptRequested() {
@@ -156,7 +155,7 @@ namespace SharpNES.Core.CPU {
       var pcHighBits = ReadFromDataBus((ushort)(AbsoluteAddress + 1));
       ProgramCounter = (ushort)((pcHighBits << 8) | pcLowBits);
 
-      _remainingCycles = 8;
+      ClockCyclesRemaining = 8;
     }
 
     public void WriteToDataBus(ushort address, byte dataToWrite) {
@@ -175,8 +174,12 @@ namespace SharpNES.Core.CPU {
       }
     }
 
-    public void ReadALUInputRegister() {
-      throw new NotImplementedException();
+    public byte ReadALUInputRegister() {
+      if (_currentInstruction.AddressingModeIsImplicit) {
+        throw new AddressingModeException("Reading the ALU Input Pseudo-Register is not supported in Implicit Mode");
+      }
+
+      return ReadFromDataBus(AbsoluteAddress);
     }
 
     private class Constants {
