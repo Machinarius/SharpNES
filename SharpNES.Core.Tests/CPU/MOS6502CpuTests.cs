@@ -91,11 +91,11 @@ namespace SharpNES.Core.Tests.CPU {
     }
 
     [Fact]
-    public void TheCpuMustExtendTheInstructionCyclesShouldTheOpCodeRequestSo() {
+    public void TheCpuMustNotExtendTheInstructionCyclesIfOnlyTheOpCodeRequestsSo() {
       ushort originalPC = _subject.ProgramCounter;
       byte expectedOpCode = 10;
       _mockDataBus
-        .Setup(mock => mock.ReadFromMemory(originalPC, false))
+        .Setup(mock => mock.ReadFromMemory(It.IsAny<ushort>(), false))
         .Returns(expectedOpCode);
 
       _mockExecutor
@@ -106,7 +106,7 @@ namespace SharpNES.Core.Tests.CPU {
         .Setup(mock => mock.Immediate())
         .Returns(false);
 
-      var expectedInstruction = new CpuInstruction("BRK", _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
+      var expectedInstruction = new CpuInstruction("BRK", _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 1);
       _mockInstructionsTable
         .Setup(mock => mock.GetInstructionForOpCode(expectedOpCode))
         .Returns(expectedInstruction)
@@ -114,15 +114,46 @@ namespace SharpNES.Core.Tests.CPU {
 
       _subject.OnClockTick();
       _subject.OnClockTick();
-      _subject.OnClockTick();
       _mockDataBus.Verify(mock => mock.ReadFromMemory(originalPC, false), Times.Once);
-      _mockExecutor.Verify(mock => mock.BreakInterrupt(), Times.Once);
-      _mockAddressing.Verify(mock => mock.Immediate(), Times.Once);
-      _mockInstructionsTable.Verify(mock => mock.GetInstructionForOpCode(expectedOpCode), Times.Once);
+      _mockDataBus.Verify(mock => mock.ReadFromMemory((ushort)(originalPC + 1), false), Times.Once);
+      _mockExecutor.Verify(mock => mock.BreakInterrupt(), Times.Exactly(2));
+      _mockAddressing.Verify(mock => mock.Immediate(), Times.Exactly(2));
+      _mockInstructionsTable.Verify(mock => mock.GetInstructionForOpCode(expectedOpCode), Times.Exactly(2));
     }
 
     [Fact]
-    public void TheCpuMustExtendTheInstructionCyclesShouldTheAddressingModeRequestSo() {
+    public void TheCpuMustNotExtendTheInstructionCyclesIfOnlyTheAddressingModeRequestsSo() {
+      ushort originalPC = _subject.ProgramCounter;
+      byte expectedOpCode = 10;
+      _mockDataBus
+        .Setup(mock => mock.ReadFromMemory(It.IsAny<ushort>(), false))
+        .Returns(expectedOpCode);
+
+      _mockExecutor
+        .Setup(mock => mock.BreakInterrupt())
+        .Returns(false);
+
+      _mockAddressing
+        .Setup(mock => mock.Immediate())
+        .Returns(true);
+
+      var expectedInstruction = new CpuInstruction("BRK", _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 1);
+      _mockInstructionsTable
+        .Setup(mock => mock.GetInstructionForOpCode(expectedOpCode))
+        .Returns(expectedInstruction)
+        .Verifiable();
+
+      _subject.OnClockTick();
+      _subject.OnClockTick();
+      _mockDataBus.Verify(mock => mock.ReadFromMemory(originalPC, false), Times.Once);
+      _mockDataBus.Verify(mock => mock.ReadFromMemory((ushort)(originalPC + 1), false), Times.Once);
+      _mockExecutor.Verify(mock => mock.BreakInterrupt(), Times.Exactly(2));
+      _mockAddressing.Verify(mock => mock.Immediate(), Times.Exactly(2));
+      _mockInstructionsTable.Verify(mock => mock.GetInstructionForOpCode(expectedOpCode), Times.Exactly(2));
+    }
+
+    [Fact]
+    public void TheCpuMustExtendTheInstructionCyclesShouldBothAddressingModeAndInstructionRequestSo() {
       ushort originalPC = _subject.ProgramCounter;
       byte expectedOpCode = 10;
       _mockDataBus
@@ -131,7 +162,7 @@ namespace SharpNES.Core.Tests.CPU {
 
       _mockExecutor
         .Setup(mock => mock.BreakInterrupt())
-        .Returns(false);
+        .Returns(true);
 
       _mockAddressing
         .Setup(mock => mock.Immediate())
