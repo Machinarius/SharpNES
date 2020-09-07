@@ -280,7 +280,6 @@ namespace SharpNES.Core.Tests.CPU {
       Check.That(_subject.StatusRegister).IsEqualTo(NESCpuFlags.Unused); // HasFlag could also work here?
       Check.That(_subject.AbsoluteAddress).IsEqualTo(0);
       Check.That(_subject.RelativeAddress).IsEqualTo(0);
-      Check.That(_subject.ALUInputRegister).IsEqualTo(0);
       Check.That(_subject.ClockCyclesRemaining).IsEqualTo(8);
     }
 

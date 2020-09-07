@@ -32,7 +32,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
         .Returns(memoryValue)
         .Verifiable();
 
-      _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns(memoryValue);
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(memoryValue);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, accumulatorValue);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
 
@@ -67,7 +67,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
         .Returns(0)
         .Verifiable();
 
-      _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns((byte)0);
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(0);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.CarryBit);
 
@@ -82,7 +82,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
         .Returns(0)
         .Verifiable();
 
-      _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns((byte)0);
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(0);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
 
@@ -102,7 +102,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
         .Returns(0)
         .Verifiable();
 
-      _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns(memoryValue);
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(memoryValue);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, accumulatorValue);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
 
@@ -137,7 +137,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
         .Returns(0)
         .Verifiable();
 
-      _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns((byte)0);
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(0);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.CarryBit);
 
@@ -154,7 +154,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
         .Returns(0)
         .Verifiable();
 
-      _mockCpu.SetupGet(mock => mock.ALUInputRegister).Returns((byte)0);
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(0);
       _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0);
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
 

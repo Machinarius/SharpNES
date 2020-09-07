@@ -8,13 +8,6 @@ namespace SharpNES.Core.CPU {
     byte YRegister { get; }
     byte StackPointer { get; }
     ushort ProgramCounter { get; set; }
-    /// <summary>
-    /// This is a Pseudo-Register that does not actually
-    /// exist in the MOS6502 CPU. We have this here to make
-    /// it easier for some Op-Codes to get the operand from
-    /// the memory address supplied by the addressing mode
-    /// </summary>
-    byte ALUInputRegister { get; set; }
     ushort AbsoluteAddress { get; set; }
     ushort RelativeAddress { get; set; }
 

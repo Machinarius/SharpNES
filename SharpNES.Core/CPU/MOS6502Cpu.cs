@@ -19,8 +19,6 @@ namespace SharpNES.Core.CPU {
 
     public byte YRegister { get; set; }
 
-    public byte ALUInputRegister { get; set; }
-
     public byte StackPointer { get; set; }
 
     public ushort ProgramCounter { get; set; }
@@ -99,7 +97,6 @@ namespace SharpNES.Core.CPU {
 
       AbsoluteAddress = 0x0;
       RelativeAddress = 0x0;
-      ALUInputRegister = 0x0;
 
       ClockCyclesRemaining = 8;
     }

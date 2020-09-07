@@ -18,17 +18,9 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
     }
 
     [Fact]
-    public void ImplicitAddressingModeMustSetTheALUInputToTheValueOfTheAccumulator() {
-      byte expectedAccumulator = 123;
-      _mockCpu
-        .SetupGet(mock => mock.AccumulatorRegister)
-        .Returns(expectedAccumulator);
-      _mockCpu.SetupSet(mock => mock.ALUInputRegister = expectedAccumulator)
-        .Verifiable();
-
+    public void ImplicitAddressingMustNotRequireMoreCycles() {
       var requiresMoreCycles = _subject.Implicit();
       Check.That(requiresMoreCycles).IsFalse();
-      _mockCpu.Verify();
     }
 
     [Fact]

@@ -12,15 +12,15 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool AddWithCarry() {
-      _cpu.ReadALUInputRegister();
+      var aluInput = _cpu.ReadALUInputRegister();
 
-      var addResult = _cpu.ALUInputRegister + _cpu.AccumulatorRegister +
+      var addResult = aluInput + _cpu.AccumulatorRegister +
          (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit) ? 1 : 0);
       var carryBit = addResult > byte.MaxValue;
       var zeroBit = (addResult & Masks.LowerBits) == 0;
       var negativeBit = Convert.ToBoolean(addResult & Masks.SignBit);
       var overflowBit = Convert.ToBoolean(
-        (~(_cpu.AccumulatorRegister ^ _cpu.ALUInputRegister) & (_cpu.AccumulatorRegister ^ addResult)) & Masks.SignBit
+        (~(_cpu.AccumulatorRegister ^ aluInput) & (_cpu.AccumulatorRegister ^ addResult)) & Masks.SignBit
       );
 
       var resultFlags = _cpu.StatusRegister;
@@ -243,18 +243,18 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool SubtractWithCarry() {
-      _cpu.ReadALUInputRegister();
+      var aluInput = _cpu.ReadALUInputRegister();
 
       // TODO: Extract the logic beyond the 2's complement into a common function
       // for ADC and SBC - Everything beyond 2's complement is addition
-      var twosComplement = (_cpu.ALUInputRegister ^ Masks.LowerBits) + 1;
+      var twosComplement = (aluInput ^ Masks.LowerBits) + 1;
       var subtractResult = twosComplement + _cpu.AccumulatorRegister +
          (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit) ? 1 : 0);
       var carryBit = subtractResult > byte.MaxValue;
       var zeroBit = (subtractResult & Masks.LowerBits) == 0;
       var negativeBit = Convert.ToBoolean(subtractResult & Masks.SignBit);
       var overflowBit = Convert.ToBoolean(
-        (~(_cpu.AccumulatorRegister ^ _cpu.ALUInputRegister) & (_cpu.AccumulatorRegister ^ subtractResult)) & Masks.SignBit
+        (~(_cpu.AccumulatorRegister ^ aluInput) & (_cpu.AccumulatorRegister ^ subtractResult)) & Masks.SignBit
       );
 
       var resultFlags = _cpu.StatusRegister;

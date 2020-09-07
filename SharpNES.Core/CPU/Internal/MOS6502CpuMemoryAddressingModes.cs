@@ -45,7 +45,6 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool Implicit() {
-      _cpu.ALUInputRegister = _cpu.AccumulatorRegister;
       return false;
     }
 
