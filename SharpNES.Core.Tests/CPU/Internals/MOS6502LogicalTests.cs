@@ -18,6 +18,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _subject = new MOS6502CpuInstructionExecutor(_mockCpu.Object, _mockLogger.Object);
     }
 
+    #region AND
     [Theory]
     [InlineData(0x0, 0x1, 0x0)]
     [InlineData(0x2, 0x1, 0x0)]
@@ -89,5 +90,6 @@ namespace SharpNES.Core.Tests.CPU.Internals {
 
       Check.That(_subject.AndWithAccumulator()).IsTrue();
     }
+    #endregion
   }
 }
