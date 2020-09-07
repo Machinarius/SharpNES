@@ -3,5 +3,8 @@ solution: SharpNES.sln
 mono: none
 dotnet: 3.1.100
 script:
-  - dotnet restore
-  - dotnet test --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=json,cobertura,lcov,teamcity,opencover
+- dotnet restore
+- dotnet tool restore
+- dotnet test --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=json,cobertura,lcov,teamcity,opencover 
+- find SharpNES.Core.Tests/TestResults -mindepth 2 -type f -print -exec mv {} SharpNES.Core.Tests/TestResults/ \;
+- dotnet tool run csmacnz.Coveralls --opencover -i ./SharpNES.Core.Tests/TestResults/coverage.opencover.xml
