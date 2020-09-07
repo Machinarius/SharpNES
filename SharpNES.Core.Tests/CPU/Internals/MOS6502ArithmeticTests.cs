@@ -9,12 +9,12 @@ using System.Collections.Generic;
 using Xunit;
 
 namespace SharpNES.Core.Tests.CPU.Internals {
-  public class MOS6502CpuInstructionExecutorTests {
+  public class MOS6502ArithmeticTests {
     private readonly Mock<INESCpu> _mockCpu;
     private readonly Mock<ILogger<MOS6502CpuInstructionExecutor>> _mockLogger;
     private readonly MOS6502CpuInstructionExecutor _subject;
 
-    public MOS6502CpuInstructionExecutorTests() {
+    public MOS6502ArithmeticTests() {
       _mockCpu = new Mock<INESCpu>(MockBehavior.Strict);
       _mockLogger = new Mock<ILogger<MOS6502CpuInstructionExecutor>>(MockBehavior.Loose);
       _subject = new MOS6502CpuInstructionExecutor(_mockCpu.Object, _mockLogger.Object);

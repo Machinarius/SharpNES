@@ -47,7 +47,22 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool AndWithAccumulator() {
-      throw new NotImplementedException();
+      var input = _cpu.ReadALUInputRegister();
+      var accumulator = _cpu.AccumulatorRegister;
+      _cpu.AccumulatorRegister = (byte)(input & accumulator);
+
+      var negativeValue = (_cpu.AccumulatorRegister & Masks.SignBit) == Masks.SignBit;
+      var zeroValue = _cpu.AccumulatorRegister == 0;
+      
+      if (negativeValue) {
+        _cpu.StatusRegister |= NESCpuFlags.Negative;
+      }
+
+      if (zeroValue) {
+        _cpu.StatusRegister |= NESCpuFlags.Zero;
+      }
+
+      return true;
     }
 
     public bool ArithmeticShiftLeft() {
