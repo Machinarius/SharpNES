@@ -45,7 +45,7 @@ namespace SharpNES.Core.Tests.CPU {
         .Returns(false)
         .Verifiable();
 
-      var expectedInstruction = new CpuInstruction("BRK", _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
+      var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
       _mockInstructionsTable
         .Setup(mock => mock.GetInstructionForOpCode(expectedOpCode))
         .Returns(expectedInstruction)
@@ -76,7 +76,7 @@ namespace SharpNES.Core.Tests.CPU {
         .Setup(mock => mock.Immediate())
         .Returns(false);
 
-      var expectedInstruction = new CpuInstruction("BRK", _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
+      var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
       _mockInstructionsTable
         .Setup(mock => mock.GetInstructionForOpCode(expectedOpCode))
         .Returns(expectedInstruction)
@@ -106,7 +106,7 @@ namespace SharpNES.Core.Tests.CPU {
         .Setup(mock => mock.Immediate())
         .Returns(false);
 
-      var expectedInstruction = new CpuInstruction("BRK", _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 1);
+      var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 1);
       _mockInstructionsTable
         .Setup(mock => mock.GetInstructionForOpCode(expectedOpCode))
         .Returns(expectedInstruction)
@@ -137,7 +137,7 @@ namespace SharpNES.Core.Tests.CPU {
         .Setup(mock => mock.Immediate())
         .Returns(true);
 
-      var expectedInstruction = new CpuInstruction("BRK", _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 1);
+      var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 1);
       _mockInstructionsTable
         .Setup(mock => mock.GetInstructionForOpCode(expectedOpCode))
         .Returns(expectedInstruction)
@@ -168,7 +168,7 @@ namespace SharpNES.Core.Tests.CPU {
         .Setup(mock => mock.Immediate())
         .Returns(true);
 
-      var expectedInstruction = new CpuInstruction("BRK", _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
+      var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
       _mockInstructionsTable
         .Setup(mock => mock.GetInstructionForOpCode(expectedOpCode))
         .Returns(expectedInstruction)
@@ -204,7 +204,7 @@ namespace SharpNES.Core.Tests.CPU {
         .Setup(mock => mock.Immediate())
         .Returns(false);
 
-      var expectedInstruction = new CpuInstruction("BRK", _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
+      var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
       _mockInstructionsTable
         .Setup(mock => mock.GetInstructionForOpCode(expectedOpCode))
         .Returns(expectedInstruction)
@@ -378,7 +378,7 @@ namespace SharpNES.Core.Tests.CPU {
     public void ReadALUInputRegisterMustThrowAnExceptionWhenTheAddressingModeIsImplicit() {
       var instructionField = _subject.GetType().GetField("_currentInstruction", 
         System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-      instructionField.SetValue(_subject, new CpuInstruction("TST", () => false, () => false, 1, true));
+      instructionField.SetValue(_subject, new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Implicit, () => false, () => false, 1));
 
       Check.ThatCode(() => _subject.ReadALUInputRegister()).Throws<AddressingModeException>();
     }

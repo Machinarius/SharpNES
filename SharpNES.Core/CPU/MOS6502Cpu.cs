@@ -76,7 +76,7 @@ namespace SharpNES.Core.CPU {
         var addrModeCycle = _currentInstruction.AddressingModeFunc();
         var opCodeCyle = _currentInstruction.OperatorFunc();
         ClockCyclesRemaining += Convert.ToInt32(addrModeCycle && opCodeCyle);
-        _logger.LogInformation($"Executing {_currentInstruction.Name} for {ClockCyclesRemaining} cycles");
+        _logger.LogInformation($"Executing {_currentInstruction.Instruction} for {ClockCyclesRemaining} cycles");
       }
 
       ClockCyclesRemaining -= 1;
@@ -170,7 +170,7 @@ namespace SharpNES.Core.CPU {
     }
 
     public byte ReadALUInputRegister() {
-      if (_currentInstruction.AddressingModeIsImplicit) {
+      if (_currentInstruction.AddressingMode == MOS6502AddressingMode.Implicit) {
         throw new AddressingModeException("Reading the ALU Input Pseudo-Register is not supported in Implicit Mode");
       }
 
