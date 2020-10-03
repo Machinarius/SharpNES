@@ -2,10 +2,10 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "coveralls.netcore": {
-      "version": "2.1.0",
+    "coveralls.net.machinarius": {
+      "version": "0.0.1",
       "commands": [
-        "coveralls.net"
+        "csmacnz.Coveralls"
       ]
     }
   }

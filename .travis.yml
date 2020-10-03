@@ -3,13 +3,8 @@ solution: SharpNES.sln
 mono: none
 dotnet: 3.1
 script:
-- sudo apt-get install -y dotnet-sdk-2.1
-- dotnet --list-sdks
 - dotnet restore
 - dotnet tool restore
-- dotnet test --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=json,cobertura,lcov,teamcity,opencover
+- dotnet test --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=json,cobertura,lcov,teamcity,opencover 
 - find SharpNES.Core.Tests/TestResults -mindepth 2 -type f -print -exec mv {} SharpNES.Core.Tests/TestResults/ \;
 - dotnet tool run csmacnz.Coveralls --opencover -i ./SharpNES.Core.Tests/TestResults/coverage.opencover.xml
-env:
-  global:
-  - secure: o6zJmublOG/jMzibX5aemBdDyUWj3j9mI/7+0vLb4YheHpEcw4uZ9GWBTK89RaMy1G2Df4Wjcl85aP+cZYkQQVxzNV1p8v7Lc446nGsJpV1S2R6IHiB2jcSTFuIvbiolgjjiBdOV+b3u3dXXJMDKbOvYLTAwNT0xMlmOj4phGFveGH+K9a2K8wIlVAwfu9TizF44zE1HCuofM+t3YG2GSO/qM0hBa/ifKD0PhBlGUfZ9Z1Es2AmgWCcMelNksT/Kz5vv/hZO9Y/L7R/tYENAr5ZA3OmX4+cPCtngnG9WptOCHMmTsedKqWWo45xF7FIA1yLM5wqqlDIQuXMrCJZr6qila8HnaGdGfwMzxozyOQTv5OKNRgpJ5ya5W178YcBLLiQ9SzPof4EhVL+LfnG4/N5pziLVXfKkH7gsqs1zduO9TnzB3er6mWWzqXXcnYHK34mGTgcwfQMUcsNO6A3fxr1GX6T8WbJurk1o+Dmfaq/GjcleLtpEC9DVn952tJ2xSJ3HwonHXLQSY6+XbWontYjoe9v4BevvIV+8WeSRURRcpApyHQu6abFrxrl+9nl3XlxAyRN1qjNMJ93ztpl46WzDnTHSlKI9jLEncH1YH2ARmwQki5z6U+REVLaYgIym4n5B1XyS3jyZwgQJACQqcZ93KAJEkwwTAXoGUo289TI=
