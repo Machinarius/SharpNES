@@ -39,19 +39,19 @@ namespace SharpNES.Core.Tests.CPU.Internals {
 
       var expectedFlags = NESCpuFlags.Null;
       if (expectedCarry) {
-        expectedFlags &= NESCpuFlags.CarryBit;
+        expectedFlags |= NESCpuFlags.CarryBit;
       }
 
       if (expectedOverflow) {
-        expectedFlags &= NESCpuFlags.Overflow;
+        expectedFlags |= NESCpuFlags.Overflow;
       }
 
       if (expectedZero) {
-        expectedFlags &= NESCpuFlags.Zero;
+        expectedFlags |= NESCpuFlags.Zero;
       }
 
       if (expectedNegative) {
-        expectedFlags &= NESCpuFlags.Negative;
+        expectedFlags |= NESCpuFlags.Negative;
       }
 
       _subject.AddWithCarry();
@@ -111,19 +111,19 @@ namespace SharpNES.Core.Tests.CPU.Internals {
 
       var expectedFlags = NESCpuFlags.Null;
       if (expectedCarry) {
-        expectedFlags &= NESCpuFlags.CarryBit;
+        expectedFlags |= NESCpuFlags.CarryBit;
       }
 
       if (expectedOverflow) {
-        expectedFlags &= NESCpuFlags.Overflow;
+        expectedFlags |= NESCpuFlags.Overflow;
       }
 
       if (expectedZero) {
-        expectedFlags &= NESCpuFlags.Zero;
+        expectedFlags |= NESCpuFlags.Zero;
       }
 
       if (expectedNegative) {
-        expectedFlags &= NESCpuFlags.Negative;
+        expectedFlags |= NESCpuFlags.Negative;
       }
 
       _subject.SubtractWithCarry();
@@ -166,8 +166,37 @@ namespace SharpNES.Core.Tests.CPU.Internals {
     }
     #endregion
 
+    #region AND
+    [Theory]
+    [InlineData(0x13, 0x37, 0x13, false, false)]
+    [InlineData(0x80, 0xFF, 0x80, false, true)]
+    [InlineData(0x0F, 0xF0, 0x00, true, false)]
+    public void AndMustCompareOperandsAndSetFlagsCorrectly(
+      byte accumulatorValue, byte memoryValue, byte expectedAccumulator,
+      bool expectedZero, bool expectedNegative
+    ) {
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(memoryValue);
+      _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, accumulatorValue);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
+
+      var expectedFlags = NESCpuFlags.Null;
+
+      if (expectedZero) {
+        expectedFlags |= NESCpuFlags.Zero;
+      }
+
+      if (expectedNegative) {
+        expectedFlags |= NESCpuFlags.Negative;
+      }
+
+      _subject.AndWithAccumulator();
+      Check.That(_mockCpu.Object.AccumulatorRegister).Equals(Convert.ToByte(expectedAccumulator & 0x00FF));
+      Check.That(_mockCpu.Object.StatusRegister).Equals(expectedFlags);
+    }
+    #endregion
+
     #region TestData
-    #pragma warning disable CA1812
+#pragma warning disable CA1812
     // Taken from http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
     private class AddWithCarryTestData: IEnumerable<object[]> {
       public IEnumerator<object[]> GetEnumerator() {

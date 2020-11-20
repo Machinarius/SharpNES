@@ -25,19 +25,19 @@ namespace SharpNES.Core.CPU.Internal {
 
       var resultFlags = _cpu.StatusRegister;
       if (carryBit) {
-        resultFlags &= NESCpuFlags.CarryBit;
+        resultFlags |= NESCpuFlags.CarryBit;
       }
 
       if (zeroBit) {
-        resultFlags &= NESCpuFlags.Zero;
+        resultFlags |= NESCpuFlags.Zero;
       }
 
       if (negativeBit) {
-        resultFlags &= NESCpuFlags.Negative;
+        resultFlags |= NESCpuFlags.Negative;
       }
 
       if (overflowBit) {
-        resultFlags &= NESCpuFlags.Overflow;
+        resultFlags |= NESCpuFlags.Overflow;
       }
 
       _cpu.StatusRegister = resultFlags;
@@ -274,19 +274,19 @@ namespace SharpNES.Core.CPU.Internal {
 
       var resultFlags = _cpu.StatusRegister;
       if (carryBit) {
-        resultFlags &= NESCpuFlags.CarryBit;
+        resultFlags |= NESCpuFlags.CarryBit;
       }
 
       if (zeroBit) {
-        resultFlags &= NESCpuFlags.Zero;
+        resultFlags |= NESCpuFlags.Zero;
       }
 
       if (negativeBit) {
-        resultFlags &= NESCpuFlags.Negative;
+        resultFlags |= NESCpuFlags.Negative;
       }
 
       if (overflowBit) {
-        resultFlags &= NESCpuFlags.Overflow;
+        resultFlags |= NESCpuFlags.Overflow;
       }
 
       _cpu.StatusRegister = resultFlags;
