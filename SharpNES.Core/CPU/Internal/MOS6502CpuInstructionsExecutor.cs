@@ -260,16 +260,14 @@ namespace SharpNES.Core.CPU.Internal {
     public bool SubtractWithCarry() {
       var aluInput = _cpu.ReadALUInputRegister();
 
-      // TODO: Extract the logic beyond the 2's complement into a common function
-      // for ADC and SBC - Everything beyond 2's complement is addition
       var twosComplement = (aluInput ^ Masks.LowerBits) + 1;
-      var subtractResult = twosComplement + _cpu.AccumulatorRegister +
-         (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit) ? 1 : 0);
-      var carryBit = subtractResult > byte.MaxValue;
-      var zeroBit = (subtractResult & Masks.LowerBits) == 0;
-      var negativeBit = Convert.ToBoolean(subtractResult & Masks.SignBit);
+      var subtractionResult = _cpu.AccumulatorRegister + twosComplement + 
+        (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit) ? 1 : 0);
+      var carryBit = Convert.ToBoolean((subtractionResult & 0xFFFF) & Masks.HigherBits);
+      var zeroBit = (subtractionResult & Masks.LowerBits) == 0;
+      var negativeBit = Convert.ToBoolean(subtractionResult & Masks.SignBit);
       var overflowBit = Convert.ToBoolean(
-        (~(_cpu.AccumulatorRegister ^ aluInput) & (_cpu.AccumulatorRegister ^ subtractResult)) & Masks.SignBit
+        (subtractionResult ^ _cpu.AccumulatorRegister) & (subtractionResult ^ twosComplement) & Masks.SignBit
       );
 
       var resultFlags = _cpu.StatusRegister;
@@ -290,7 +288,7 @@ namespace SharpNES.Core.CPU.Internal {
       }
 
       _cpu.StatusRegister = resultFlags;
-      _cpu.AccumulatorRegister = Convert.ToByte(subtractResult & 0x00FF);
+      _cpu.AccumulatorRegister = Convert.ToByte(subtractionResult & Masks.LowerBits);
 
       return true;
     }

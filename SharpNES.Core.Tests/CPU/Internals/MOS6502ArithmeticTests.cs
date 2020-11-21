@@ -262,7 +262,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
           (byte)208, (byte)48, (short)160, true, false, false, true
         };
         yield return new object[] {
-          (byte)0, (byte)0, (short)0, false, false, true, false
+          (byte)0, (byte)0, (short)0, true, false, true, false
         };
       }
 
