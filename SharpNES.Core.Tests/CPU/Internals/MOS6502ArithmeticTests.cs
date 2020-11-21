@@ -196,7 +196,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
     #endregion
 
     #region TestData
-#pragma warning disable CA1812
+    #pragma warning disable CA1812
     // Taken from http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
     private class AddWithCarryTestData: IEnumerable<object[]> {
       public IEnumerator<object[]> GetEnumerator() {
