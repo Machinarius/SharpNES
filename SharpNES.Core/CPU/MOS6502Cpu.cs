@@ -11,6 +11,8 @@ namespace SharpNES.Core.CPU {
     private readonly IMemoryAddressingModes _addressingModes;
     private readonly IInstructionLookupTable _instructionsTable;
 
+    private CpuInstruction _currentInstruction;
+
     public NESCpuFlags StatusRegister { get; set; }
 
     public byte AccumulatorRegister { get; set; }
@@ -27,6 +29,8 @@ namespace SharpNES.Core.CPU {
     
     public ushort RelativeAddress { get; set; }
 
+    public CpuInstruction CurrentInstruction => _currentInstruction;
+
     public ICpuInstructionExecutor InstructionExecutor => throw new NotImplementedException();
 
     public IMemoryAddressingModes AddressingModes => throw new NotImplementedException();
@@ -37,8 +41,6 @@ namespace SharpNES.Core.CPU {
     private ushort _absoluteAddress;
     // The last address JMP'd to
     private ushort _relativeAddress;
-
-    private CpuInstruction _currentInstruction;
 
     public MOS6502Cpu(
         ILogger<MOS6502Cpu> logger,

@@ -11,6 +11,8 @@ namespace SharpNES.Core.CPU {
     ushort AbsoluteAddress { get; set; }
     ushort RelativeAddress { get; set; }
 
+    CpuInstruction CurrentInstruction { get; }
+
     ICpuInstructionExecutor InstructionExecutor { get; }
     IMemoryAddressingModes AddressingModes { get; }
 

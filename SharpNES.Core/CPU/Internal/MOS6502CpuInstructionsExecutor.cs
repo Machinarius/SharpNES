@@ -66,7 +66,28 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public bool ArithmeticShiftLeft() {
-      throw new NotImplementedException();
+      var aluInput = _cpu.ReadALUInputRegister();
+      var result = aluInput << 1;       
+
+      if ((result & Masks.HigherBits) > 0) {
+        _cpu.StatusRegister |= NESCpuFlags.CarryBit;
+      }
+
+      if ((result & Masks.SignBit) == Masks.SignBit) {
+        _cpu.StatusRegister |= NESCpuFlags.Negative;
+      }
+
+      if ((result & Masks.LowerBits) == 0) {
+        _cpu.StatusRegister |= NESCpuFlags.Zero;
+      }
+
+      var clampedResult = Convert.ToByte(result & Masks.LowerBits);
+      if (_cpu.CurrentInstruction.AddressingMode == MOS6502AddressingMode.Implicit) {
+        _cpu.AccumulatorRegister = clampedResult;
+      } else {
+        _cpu.WriteToDataBus(_cpu.AbsoluteAddress, clampedResult);
+      }
+      return false;
     }
 
     public bool BitTest() {
