@@ -322,5 +322,63 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       Check.That(extraCycles).IsEqualTo(2);
     }
     #endregion
+
+    #region BEQ
+    [Fact]
+    public void BeqMustSimplyReturn0CyclesIfTheZeroFlagIsNotSet() {
+      // Random arbitrary value with Zero Flag not set
+      var initialStatus = NESCpuFlags.Overflow | NESCpuFlags.DecimalMode;
+      _mockCpu
+        .SetupProperty(cpu => cpu.StatusRegister, initialStatus);
+
+      var extraCycles = _subject.BranchOnEqual();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(initialStatus);
+    }
+
+    [Fact]
+    public void BeqMustSetThePCAndAbsAddressRegistersToJumpToRelativeAddressIfZeroFlagIsSet() {
+      ushort initialProgramCounter = 0x20;
+      ushort initialRelAddress = 0x40;
+      ushort expectedAddress = 0x60;
+
+      // Random arbitrary value with Zero Flag set
+      var initialStatus = NESCpuFlags.Overflow | NESCpuFlags.Zero;
+      _mockCpu
+        .SetupProperty(cpu => cpu.StatusRegister, initialStatus);
+      _mockCpu
+        .SetupProperty(cpu => cpu.AbsoluteAddress, (ushort)0x54); // Junk data that will be replaced
+      _mockCpu
+        .SetupProperty(cpu => cpu.RelativeAddress, initialRelAddress);
+      _mockCpu
+        .SetupProperty(cpu => cpu.ProgramCounter, initialProgramCounter);
+
+      var extraCycles = _subject.BranchOnEqual();
+      Check.That(extraCycles).IsEqualTo(1);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(initialStatus);
+      Check.That(_mockCpu.Object.AbsoluteAddress).IsEqualTo(expectedAddress);
+      Check.That(_mockCpu.Object.ProgramCounter).IsEqualTo(expectedAddress);
+    }
+
+    [Fact]
+    public void BeqMustRequireAnAdditionalCycleIfThereIsAPageJump() {
+      ushort initialProgramCounter = 0x20;
+      ushort initialRelAddress = 0x160;
+
+      // Random arbitrary value with Zero Flag set
+      var initialStatus = NESCpuFlags.Overflow | NESCpuFlags.Zero;
+      _mockCpu
+        .SetupProperty(cpu => cpu.StatusRegister, initialStatus);
+      _mockCpu
+        .SetupProperty(cpu => cpu.AbsoluteAddress, (ushort)0x54); // Junk data that will be replaced
+      _mockCpu
+        .SetupProperty(cpu => cpu.RelativeAddress, initialRelAddress);
+      _mockCpu
+        .SetupProperty(cpu => cpu.ProgramCounter, initialProgramCounter);
+
+      var extraCycles = _subject.BranchOnEqual();
+      Check.That(extraCycles).IsEqualTo(2);
+    }
+    #endregion
   }
 }
