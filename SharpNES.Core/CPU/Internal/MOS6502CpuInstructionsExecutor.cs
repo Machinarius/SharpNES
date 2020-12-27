@@ -112,7 +112,20 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int BranchOnCarrySet() {
-      throw new NotImplementedException();
+      if (!_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit)) {
+        return 0;
+      }
+
+      var extraCycles = 1;
+      _cpu.AbsoluteAddress = Convert.ToUInt16((_cpu.ProgramCounter + _cpu.RelativeAddress) & Masks.TwoBytes);
+
+      var pageJumpOcurred = (_cpu.AbsoluteAddress & Masks.HigherBits) != (_cpu.ProgramCounter & Masks.HigherBits);
+      if (pageJumpOcurred) {
+        extraCycles += 1;
+      }
+
+      _cpu.ProgramCounter = _cpu.AbsoluteAddress;
+      return extraCycles;
     }
 
     public int BranchOnEqual() {
