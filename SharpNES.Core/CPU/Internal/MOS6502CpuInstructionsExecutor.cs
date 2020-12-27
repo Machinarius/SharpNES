@@ -95,7 +95,20 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int BranchOnCarryClear() {
-      throw new NotImplementedException();
+      if (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit)) {
+        return 0;
+      }
+
+      var extraCycles = 1;
+      _cpu.AbsoluteAddress = Convert.ToUInt16((_cpu.ProgramCounter + _cpu.RelativeAddress) & Masks.TwoBytes);
+
+      var pageJumpOcurred = (_cpu.AbsoluteAddress & Masks.HigherBits) != (_cpu.ProgramCounter & Masks.HigherBits);
+      if (pageJumpOcurred) {
+        extraCycles += 1;
+      }
+
+      _cpu.ProgramCounter = _cpu.AbsoluteAddress;
+      return extraCycles;
     }
 
     public int BranchOnCarrySet() {
@@ -339,9 +352,10 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     private static class Masks {
-      public const int HigherBits = 0xFF00;
-      public const int LowerBits = 0x00FF;
-      public const int SignBit = 0x80;
+      public const ushort TwoBytes = 0xFFFF;
+      public const ushort HigherBits = 0xFF00;
+      public const ushort LowerBits = 0x00FF;
+      public const ushort SignBit = 0x80;
     }
   }
 }
