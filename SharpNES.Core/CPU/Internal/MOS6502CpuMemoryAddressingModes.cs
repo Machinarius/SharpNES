@@ -11,44 +11,44 @@ namespace SharpNES.Core.CPU.Internal {
       _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public bool Absolute() {
+    public int Absolute() {
       var lowBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       var highBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       _cpu.AbsoluteAddress = (ushort)((highBits << 8) | lowBits);
 
-      return false;
+      return 0;
     }
 
-    public bool AbsoluteX() {
+    public int AbsoluteX() {
       var lowBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       var highBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       _cpu.AbsoluteAddress = (ushort)((highBits << 8) | lowBits);
       _cpu.AbsoluteAddress += _cpu.XRegister;
 
       var pageChanged = (_cpu.AbsoluteAddress & Masks.HigherByte) != highBits << 8;
-      return pageChanged;
+      return pageChanged ? 1 : 0;
     }
 
-    public bool AbsoluteY() {
+    public int AbsoluteY() {
       var lowBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       var highBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       _cpu.AbsoluteAddress = (ushort)((highBits << 8) | lowBits);
       _cpu.AbsoluteAddress += _cpu.YRegister;
 
       var pageChanged = (_cpu.AbsoluteAddress & Masks.HigherByte) != highBits << 8;
-      return pageChanged;
+      return pageChanged ? 1 : 0;
     }
 
-    public bool Immediate() {
+    public int Immediate() {
       _cpu.AbsoluteAddress = _cpu.ProgramCounter++;
-      return false;
+      return 0;
     }
 
-    public bool Implicit() {
-      return false;
+    public int Implicit() {
+      return 0;
     }
 
-    public bool Indirect() {
+    public int Indirect() {
       var pointerLowBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       var pointerHighBits = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       var pointerBase = (ushort)((pointerHighBits << 8) | pointerLowBits);
@@ -66,10 +66,10 @@ namespace SharpNES.Core.CPU.Internal {
       var absoluteAddress = (highValue << 8) | lowValue;
       _cpu.AbsoluteAddress = (ushort)absoluteAddress;
 
-      return false;
+      return 0;
     }
 
-    public bool IndirectX() {
+    public int IndirectX() {
       var pointerBase = (ushort)_cpu.ReadFromDataBus(_cpu.ProgramCounter++);
       var xRegister = (ushort)_cpu.XRegister;
       
@@ -81,10 +81,10 @@ namespace SharpNES.Core.CPU.Internal {
       var absoluteAddress = (highValue << 8) | lowValue;
 
       _cpu.AbsoluteAddress = (ushort)absoluteAddress;
-      return false;
+      return 0;
     }
 
-    public bool IndirectY() {
+    public int IndirectY() {
       var pointerBase = _cpu.ReadFromDataBus(_cpu.ProgramCounter++);
 
       var lowAddress = (ushort)(pointerBase & Masks.LowerByte);
@@ -98,10 +98,10 @@ namespace SharpNES.Core.CPU.Internal {
       _cpu.AbsoluteAddress = (ushort)absoluteAddress;
       
       var pageChanged = (absoluteAddress & Masks.HigherByte) != (highBits << 8);
-      return pageChanged;
+      return pageChanged ? 1 : 0;
     }
 
-    public bool Relative() {
+    public int Relative() {
       _cpu.RelativeAddress = _cpu.ReadFromDataBus(_cpu.ProgramCounter);
       _cpu.ProgramCounter++;
 
@@ -111,33 +111,33 @@ namespace SharpNES.Core.CPU.Internal {
         _cpu.RelativeAddress |= Masks.HigherByte;
       }
 
-      return false;
+      return 0;
     }
 
-    public bool ZeroPageZero() {
+    public int ZeroPageZero() {
       _cpu.AbsoluteAddress = _cpu.ReadFromDataBus(_cpu.ProgramCounter);
       _cpu.ProgramCounter++;
       _cpu.AbsoluteAddress &= Masks.LowerByte;
 
-      return false;
+      return 0;
     }
 
-    public bool ZeroPageX() {
+    public int ZeroPageX() {
       var valueAtPc = _cpu.ReadFromDataBus(_cpu.ProgramCounter);
       _cpu.AbsoluteAddress = (ushort)(valueAtPc + _cpu.XRegister);
       _cpu.ProgramCounter++;
       _cpu.AbsoluteAddress &= Masks.LowerByte;
 
-      return false;
+      return 0;
     }
 
-    public bool ZeroPageY() {
+    public int ZeroPageY() {
       var addressAtPc = _cpu.ReadFromDataBus(_cpu.ProgramCounter);
       _cpu.AbsoluteAddress = (ushort)(addressAtPc + _cpu.YRegister);
       _cpu.ProgramCounter++;
       _cpu.AbsoluteAddress &= Masks.LowerByte;
 
-      return false;
+      return 0;
     }
 
     private static class Masks {

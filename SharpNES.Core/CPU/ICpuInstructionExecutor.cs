@@ -3,118 +3,118 @@
   // they need an additional theoretical cycle
   public interface ICpuInstructionExecutor {
     // ADC
-    bool AddWithCarry();
+    int AddWithCarry();
     // AND
-    bool AndWithAccumulator();
+    int AndWithAccumulator();
     // ASL
-    bool ArithmeticShiftLeft();
+    int ArithmeticShiftLeft();
     // BCC
-    bool BranchOnCarryClear();
+    int BranchOnCarryClear();
     // BCS
-    bool BranchOnCarrySet();
+    int BranchOnCarrySet();
     // BEQ
-    bool BranchOnEqual();
+    int BranchOnEqual();
     // BIT
-    bool BitTest();
+    int BitTest();
     // BMI
-    bool BranchOnMinus();
+    int BranchOnMinus();
     // BNE
-    bool BranchOnNotEqual();
+    int BranchOnNotEqual();
     // BPL
-    bool BranchOnPlus();
+    int BranchOnPlus();
     // BRK
-    bool BreakInterrupt();
+    int BreakInterrupt();
     // BVC
-    bool BranchOnOverflowClear();
+    int BranchOnOverflowClear();
     // BVS
-    bool BranchOnOverflowSet();
+    int BranchOnOverflowSet();
     // CLC
-    bool ClearCarry();
+    int ClearCarry();
     // CLD
-    bool ClearDecimal();
+    int ClearDecimal();
     // CLI
-    bool ClearInterruptDisable();
+    int ClearInterruptDisable();
     // CLV
-    bool ClearOverflow();
+    int ClearOverflow();
     // CMP
-    bool CompareWithAccumulator();
+    int CompareWithAccumulator();
     // CPX
-    bool CompareWithX();
+    int CompareWithX();
     // CPY
-    bool CompareWithY();
+    int CompareWithY();
     // DEC
-    bool Decrement();
+    int Decrement();
     // DEX
-    bool DecrementX();
+    int DecrementX();
     // DEY
-    bool DecrementY();
+    int DecrementY();
     // EOR
-    bool ExclusiveOr();
+    int ExclusiveOr();
     // INC
-    bool Increment();
+    int Increment();
     // INX
-    bool IncrementX();
+    int IncrementX();
     // INY
-    bool IncrementY();
+    int IncrementY();
     // JMP
-    bool Jump();
+    int Jump();
     // JSR
-    bool JumpSubRoutine();
+    int JumpSubRoutine();
     // LDA
-    bool LoadAccumulator();
+    int LoadAccumulator();
     // LDX
-    bool LoadX();
+    int LoadX();
     // LDY
-    bool LoadY();
+    int LoadY();
     // LSR
-    bool LogicalShiftRight();
+    int LogicalShiftRight();
     // NOP
-    bool NoOperation();
+    int NoOperation();
     // ORA
-    bool OrWithAccumulator();
+    int OrWithAccumulator();
     // PHA
-    bool PushAccumulator();
+    int PushAccumulator();
     // PHP
-    bool PushProcessorStatus();
+    int PushProcessorStatus();
     // PLA
-    bool PullAccumulator();
+    int PullAccumulator();
     // PLP
-    bool PullProcessorStatus();
+    int PullProcessorStatus();
     // ROL
-    bool RotateLeft();
+    int RotateLeft();
     // ROR
-    bool RotateRight();
+    int RotateRight();
     // RTI
-    bool ReturnFromInterrupt();
+    int ReturnFromInterrupt();
     // RTS
-    bool ReturnFromSubroutine();
+    int ReturnFromSubroutine();
     // SBC
-    bool SubtractWithCarry();
+    int SubtractWithCarry();
     // SEC
-    bool SetCarry();
+    int SetCarry();
     // SED
-    bool SetDecimal();
+    int SetDecimal();
     // SEI
-    bool SetInterruptDisable();
+    int SetInterruptDisable();
     // STA
-    bool StoreAccumulator();
+    int StoreAccumulator();
     // STX
-    bool StoreX();
+    int StoreX();
     // STY
-    bool StoreY();
+    int StoreY();
     // TAX
-    bool TransferAccumulatorToX();
+    int TransferAccumulatorToX();
     // TAY
-    bool TransferAccumulatorToY();
+    int TransferAccumulatorToY();
     // TSX
-    bool TransferStackPointerToX();
+    int TransferStackPointerToX();
     // TXA
-    bool TransferXToAccumulator();
+    int TransferXToAccumulator();
     // TXS
-    bool TransferXToStackPointer();
+    int TransferXToStackPointer();
     // TYA
-    bool TransferYToAccumulator();
+    int TransferYToAccumulator();
     // XXX
-    bool IllegalOpCode();
+    int IllegalOpCode();
   }
 }

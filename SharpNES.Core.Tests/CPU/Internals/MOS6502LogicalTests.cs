@@ -88,7 +88,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu
         .SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
 
-      Check.That(_subject.AndWithAccumulator()).IsTrue();
+      Check.That(_subject.AndWithAccumulator()).IsEqualTo(1);
     }
     #endregion
   
@@ -103,7 +103,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu.SetupGet(mock => mock.CurrentInstruction).Returns(
         new CpuInstruction(
           MOS6502Instruction.ASL, MOS6502AddressingMode.AbsoluteX, 
-          () => true, () => true, 1
+          () => 1, () => 1, 1
         )
       );
 
@@ -122,7 +122,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu.SetupGet(mock => mock.CurrentInstruction).Returns(
         new CpuInstruction(
           MOS6502Instruction.ASL, MOS6502AddressingMode.AbsoluteX, 
-          () => true, () => true, 1
+          () => 1, () => 1, 1
         )
       );
 
@@ -141,7 +141,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu.SetupGet(mock => mock.CurrentInstruction).Returns(
         new CpuInstruction(
           MOS6502Instruction.ASL, MOS6502AddressingMode.AbsoluteX, 
-          () => true, () => true, 1
+          () => 1, () => 1, 1
         )
       );
 
@@ -160,7 +160,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu.SetupGet(mock => mock.CurrentInstruction).Returns(
         new CpuInstruction(
           MOS6502Instruction.ASL, MOS6502AddressingMode.AbsoluteX, 
-          () => true, () => true, 1
+          () => 1, () => 1, 1
         )
       );
 
@@ -179,7 +179,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu.SetupGet(mock => mock.CurrentInstruction).Returns(
         new CpuInstruction(
           MOS6502Instruction.ASL, MOS6502AddressingMode.Implicit, 
-          () => true, () => true, 1
+          () => 1, () => 1, 1
         )
       );
 
@@ -199,11 +199,11 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu.SetupGet(mock => mock.CurrentInstruction).Returns(
         new CpuInstruction(
           MOS6502Instruction.ASL, MOS6502AddressingMode.AbsoluteX, 
-          () => true, () => true, 1
+          () => 1, () => 1, 1
         )
       );
 
-      Check.That(_subject.ArithmeticShiftLeft()).IsFalse();
+      Check.That(_subject.ArithmeticShiftLeft()).IsEqualTo(0);
     }
     #endregion
   }

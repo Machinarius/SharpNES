@@ -88,7 +88,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
 
       var requiresMoreCycles = _subject.AddWithCarry();
-      Check.That(requiresMoreCycles).IsTrue();
+      Check.That(requiresMoreCycles).IsEqualTo(1);
     }
     #endregion
 
@@ -162,7 +162,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Null);
 
       var requiresMoreCycles = _subject.SubtractWithCarry();
-      Check.That(requiresMoreCycles).IsTrue();
+      Check.That(requiresMoreCycles).IsEqualTo(1);
     }
     #endregion
 

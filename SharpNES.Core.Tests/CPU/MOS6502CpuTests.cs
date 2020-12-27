@@ -37,12 +37,12 @@ namespace SharpNES.Core.Tests.CPU {
 
       _mockExecutor
         .Setup(mock => mock.BreakInterrupt())
-        .Returns(false)
+        .Returns(0)
         .Verifiable();
 
       _mockAddressing
         .Setup(mock => mock.Immediate())
-        .Returns(false)
+        .Returns(0)
         .Verifiable();
 
       var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
@@ -70,11 +70,11 @@ namespace SharpNES.Core.Tests.CPU {
 
       _mockExecutor
         .Setup(mock => mock.BreakInterrupt())
-        .Returns(false);
+        .Returns(0);
 
       _mockAddressing
         .Setup(mock => mock.Immediate())
-        .Returns(false);
+        .Returns(0);
 
       var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
       _mockInstructionsTable
@@ -100,11 +100,11 @@ namespace SharpNES.Core.Tests.CPU {
 
       _mockExecutor
         .Setup(mock => mock.BreakInterrupt())
-        .Returns(true);
+        .Returns(1);
 
       _mockAddressing
         .Setup(mock => mock.Immediate())
-        .Returns(false);
+        .Returns(0);
 
       var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 1);
       _mockInstructionsTable
@@ -131,11 +131,11 @@ namespace SharpNES.Core.Tests.CPU {
 
       _mockExecutor
         .Setup(mock => mock.BreakInterrupt())
-        .Returns(false);
+        .Returns(0);
 
       _mockAddressing
         .Setup(mock => mock.Immediate())
-        .Returns(true);
+        .Returns(1);
 
       var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 1);
       _mockInstructionsTable
@@ -162,11 +162,11 @@ namespace SharpNES.Core.Tests.CPU {
 
       _mockExecutor
         .Setup(mock => mock.BreakInterrupt())
-        .Returns(true);
+        .Returns(1);
 
       _mockAddressing
         .Setup(mock => mock.Immediate())
-        .Returns(true);
+        .Returns(1);
 
       var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
       _mockInstructionsTable
@@ -198,11 +198,11 @@ namespace SharpNES.Core.Tests.CPU {
 
       _mockExecutor
         .Setup(mock => mock.BreakInterrupt())
-        .Returns(false);
+        .Returns(0);
 
       _mockAddressing
         .Setup(mock => mock.Immediate())
-        .Returns(false);
+        .Returns(0);
 
       var expectedInstruction = new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Immediate, _mockExecutor.Object.BreakInterrupt, _mockAddressing.Object.Immediate, 2);
       _mockInstructionsTable
@@ -378,7 +378,7 @@ namespace SharpNES.Core.Tests.CPU {
     public void ReadALUInputRegisterMustThrowAnExceptionWhenTheAddressingModeIsImplicit() {
       var instructionField = _subject.GetType().GetField("_currentInstruction", 
         System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-      instructionField.SetValue(_subject, new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Implicit, () => false, () => false, 1));
+      instructionField.SetValue(_subject, new CpuInstruction(MOS6502Instruction.BRK, MOS6502AddressingMode.Implicit, () => 0, () => 0, 1));
 
       Check.ThatCode(() => _subject.ReadALUInputRegister()).Throws<AddressingModeException>();
     }

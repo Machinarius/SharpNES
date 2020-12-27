@@ -3,28 +3,28 @@
   // they need an additional theoretical cycle
   public interface IMemoryAddressingModes {
     // IMP
-    bool Implicit();
+    int Implicit();
     // IMM
-    bool Immediate();
+    int Immediate();
     // ZP0
-    bool ZeroPageZero();
+    int ZeroPageZero();
     // ZPX
-    bool ZeroPageX();
+    int ZeroPageX();
     // ZPY
-    bool ZeroPageY();
+    int ZeroPageY();
     // REL
-    bool Relative();
+    int Relative();
     // ABS
-    bool Absolute();
+    int Absolute();
     // ABX
-    bool AbsoluteX();
+    int AbsoluteX();
     // ABY
-    bool AbsoluteY();
+    int AbsoluteY();
     // IND
-    bool Indirect();
+    int Indirect();
     // IZX
-    bool IndirectX();
+    int IndirectX();
     // IZY
-    bool IndirectY();
+    int IndirectY();
   }
 }

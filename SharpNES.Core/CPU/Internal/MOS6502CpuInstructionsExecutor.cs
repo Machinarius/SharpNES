@@ -11,7 +11,7 @@ namespace SharpNES.Core.CPU.Internal {
       _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public bool AddWithCarry() {
+    public int AddWithCarry() {
       var aluInput = _cpu.ReadALUInputRegister();
 
       var addResult = aluInput + _cpu.AccumulatorRegister +
@@ -43,17 +43,17 @@ namespace SharpNES.Core.CPU.Internal {
       _cpu.StatusRegister = resultFlags;
       _cpu.AccumulatorRegister = Convert.ToByte(addResult & Masks.LowerBits);
 
-      return true;
+      return 1;
     }
 
-    public bool AndWithAccumulator() {
+    public int AndWithAccumulator() {
       var input = _cpu.ReadALUInputRegister();
       var accumulator = _cpu.AccumulatorRegister;
       _cpu.AccumulatorRegister = (byte)(input & accumulator);
 
       var negativeValue = (_cpu.AccumulatorRegister & Masks.SignBit) == Masks.SignBit;
       var zeroValue = _cpu.AccumulatorRegister == 0;
-      
+
       if (negativeValue) {
         _cpu.StatusRegister |= NESCpuFlags.Negative;
       }
@@ -62,12 +62,12 @@ namespace SharpNES.Core.CPU.Internal {
         _cpu.StatusRegister |= NESCpuFlags.Zero;
       }
 
-      return true;
+      return 1;
     }
 
-    public bool ArithmeticShiftLeft() {
+    public int ArithmeticShiftLeft() {
       var aluInput = _cpu.ReadALUInputRegister();
-      var result = aluInput << 1;       
+      var result = aluInput << 1;
 
       if ((result & Masks.HigherBits) > 0) {
         _cpu.StatusRegister |= NESCpuFlags.CarryBit;
@@ -87,202 +87,202 @@ namespace SharpNES.Core.CPU.Internal {
       } else {
         _cpu.WriteToDataBus(_cpu.AbsoluteAddress, clampedResult);
       }
-      return false;
+      return 0;
     }
 
-    public bool BitTest() {
+    public int BitTest() {
       throw new NotImplementedException();
     }
 
-    public bool BranchOnCarryClear() {
+    public int BranchOnCarryClear() {
       throw new NotImplementedException();
     }
 
-    public bool BranchOnCarrySet() {
+    public int BranchOnCarrySet() {
       throw new NotImplementedException();
     }
 
-    public bool BranchOnEqual() {
+    public int BranchOnEqual() {
       throw new NotImplementedException();
     }
 
-    public bool BranchOnMinus() {
+    public int BranchOnMinus() {
       throw new NotImplementedException();
     }
 
-    public bool BranchOnNotEqual() {
+    public int BranchOnNotEqual() {
       throw new NotImplementedException();
     }
 
-    public bool BranchOnOverflowClear() {
+    public int BranchOnOverflowClear() {
       throw new NotImplementedException();
     }
 
-    public bool BranchOnOverflowSet() {
+    public int BranchOnOverflowSet() {
       throw new NotImplementedException();
     }
 
-    public bool BranchOnPlus() {
+    public int BranchOnPlus() {
       throw new NotImplementedException();
     }
 
-    public bool BreakInterrupt() {
+    public int BreakInterrupt() {
       throw new NotImplementedException();
     }
 
-    public bool ClearCarry() {
+    public int ClearCarry() {
       throw new NotImplementedException();
     }
 
-    public bool ClearDecimal() {
+    public int ClearDecimal() {
       throw new NotImplementedException();
     }
 
-    public bool ClearInterruptDisable() {
+    public int ClearInterruptDisable() {
       throw new NotImplementedException();
     }
 
-    public bool ClearOverflow() {
+    public int ClearOverflow() {
       throw new NotImplementedException();
     }
 
-    public bool CompareWithAccumulator() {
+    public int CompareWithAccumulator() {
       throw new NotImplementedException();
     }
 
-    public bool CompareWithX() {
+    public int CompareWithX() {
       throw new NotImplementedException();
     }
 
-    public bool CompareWithY() {
+    public int CompareWithY() {
       throw new NotImplementedException();
     }
 
-    public bool Decrement() {
+    public int Decrement() {
       throw new NotImplementedException();
     }
 
-    public bool DecrementX() {
+    public int DecrementX() {
       throw new NotImplementedException();
     }
 
-    public bool DecrementY() {
+    public int DecrementY() {
       throw new NotImplementedException();
     }
 
-    public bool ExclusiveOr() {
+    public int ExclusiveOr() {
       throw new NotImplementedException();
     }
 
-    public bool IllegalOpCode() {
+    public int IllegalOpCode() {
       throw new NotImplementedException();
     }
 
-    public bool Increment() {
+    public int Increment() {
       throw new NotImplementedException();
     }
 
-    public bool IncrementX() {
+    public int IncrementX() {
       throw new NotImplementedException();
     }
 
-    public bool IncrementY() {
+    public int IncrementY() {
       throw new NotImplementedException();
     }
 
-    public bool Jump() {
+    public int Jump() {
       throw new NotImplementedException();
     }
 
-    public bool JumpSubRoutine() {
+    public int JumpSubRoutine() {
       throw new NotImplementedException();
     }
 
-    public bool LoadAccumulator() {
+    public int LoadAccumulator() {
       throw new NotImplementedException();
     }
 
-    public bool LoadX() {
+    public int LoadX() {
       throw new NotImplementedException();
     }
 
-    public bool LoadY() {
+    public int LoadY() {
       throw new NotImplementedException();
     }
 
-    public bool LogicalShiftRight() {
+    public int LogicalShiftRight() {
       throw new NotImplementedException();
     }
 
-    public bool NoOperation() {
+    public int NoOperation() {
       throw new NotImplementedException();
     }
 
-    public bool OrWithAccumulator() {
+    public int OrWithAccumulator() {
       throw new NotImplementedException();
     }
 
-    public bool PullAccumulator() {
+    public int PullAccumulator() {
       throw new NotImplementedException();
     }
 
-    public bool PullProcessorStatus() {
+    public int PullProcessorStatus() {
       throw new NotImplementedException();
     }
 
-    public bool PushAccumulator() {
+    public int PushAccumulator() {
       throw new NotImplementedException();
     }
 
-    public bool PushProcessorStatus() {
+    public int PushProcessorStatus() {
       throw new NotImplementedException();
     }
 
-    public bool ReturnFromInterrupt() {
+    public int ReturnFromInterrupt() {
       throw new NotImplementedException();
     }
 
-    public bool ReturnFromSubroutine() {
+    public int ReturnFromSubroutine() {
       throw new NotImplementedException();
     }
 
-    public bool RotateLeft() {
+    public int RotateLeft() {
       throw new NotImplementedException();
     }
 
-    public bool RotateRight() {
+    public int RotateRight() {
       throw new NotImplementedException();
     }
 
-    public bool SetCarry() {
+    public int SetCarry() {
       throw new NotImplementedException();
     }
 
-    public bool SetDecimal() {
+    public int SetDecimal() {
       throw new NotImplementedException();
     }
 
-    public bool SetInterruptDisable() {
+    public int SetInterruptDisable() {
       throw new NotImplementedException();
     }
 
-    public bool StoreAccumulator() {
+    public int StoreAccumulator() {
       throw new NotImplementedException();
     }
 
-    public bool StoreX() {
+    public int StoreX() {
       throw new NotImplementedException();
     }
 
-    public bool StoreY() {
+    public int StoreY() {
       throw new NotImplementedException();
     }
 
-    public bool SubtractWithCarry() {
+    public int SubtractWithCarry() {
       var aluInput = _cpu.ReadALUInputRegister();
 
       var twosComplement = (aluInput ^ Masks.LowerBits) + 1;
-      var subtractionResult = _cpu.AccumulatorRegister + twosComplement + 
+      var subtractionResult = _cpu.AccumulatorRegister + twosComplement +
         (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit) ? 1 : 0);
       var carryBit = Convert.ToBoolean((subtractionResult & 0xFFFF) & Masks.HigherBits);
       var zeroBit = (subtractionResult & Masks.LowerBits) == 0;
@@ -311,30 +311,30 @@ namespace SharpNES.Core.CPU.Internal {
       _cpu.StatusRegister = resultFlags;
       _cpu.AccumulatorRegister = Convert.ToByte(subtractionResult & Masks.LowerBits);
 
-      return true;
+      return 1;
     }
 
-    public bool TransferAccumulatorToX() {
+    public int TransferAccumulatorToX() {
       throw new NotImplementedException();
     }
 
-    public bool TransferAccumulatorToY() {
+    public int TransferAccumulatorToY() {
       throw new NotImplementedException();
     }
 
-    public bool TransferStackPointerToX() {
+    public int TransferStackPointerToX() {
       throw new NotImplementedException();
     }
 
-    public bool TransferXToAccumulator() {
+    public int TransferXToAccumulator() {
       throw new NotImplementedException();
     }
 
-    public bool TransferXToStackPointer() {
+    public int TransferXToStackPointer() {
       throw new NotImplementedException();
     }
 
-    public bool TransferYToAccumulator() {
+    public int TransferYToAccumulator() {
       throw new NotImplementedException();
     }
 

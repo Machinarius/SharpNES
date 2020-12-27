@@ -73,11 +73,11 @@ namespace SharpNES.Core.CPU {
 
         var currentOpCode = ReadFromDataBus(ProgramCounter++);
         _currentInstruction = _instructionsTable.GetInstructionForOpCode(currentOpCode);
-        ClockCyclesRemaining = _currentInstruction.CycleCount;
+        ClockCyclesRemaining = _currentInstruction.BaseCycleCount;
 
-        var addrModeCycle = _currentInstruction.AddressingModeFunc();
-        var opCodeCyle = _currentInstruction.OperatorFunc();
-        ClockCyclesRemaining += Convert.ToInt32(addrModeCycle && opCodeCyle);
+        var addrModeCycles = _currentInstruction.AddressingModeFunc();
+        var opCodeCycles = _currentInstruction.OperatorFunc();
+        ClockCyclesRemaining += addrModeCycles & opCodeCycles;
         _logger.LogInformation($"Executing {_currentInstruction.Instruction} for {ClockCyclesRemaining} cycles");
       }
 

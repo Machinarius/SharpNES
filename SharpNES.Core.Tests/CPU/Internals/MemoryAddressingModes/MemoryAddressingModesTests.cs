@@ -20,7 +20,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
     [Fact]
     public void ImplicitAddressingMustNotRequireMoreCycles() {
       var requiresMoreCycles = _subject.Implicit();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
       
       var requiresMoreCyles = _subject.Immediate();
-      Check.That(requiresMoreCyles).IsFalse();
+      Check.That(requiresMoreCyles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -59,7 +59,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.ZeroPageZero();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -82,7 +82,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.ZeroPageX();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -105,7 +105,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.ZeroPageY();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -125,7 +125,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.Relative();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -146,7 +146,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.Relative();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -169,7 +169,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
 
       var requiresMoreCycles = _subject.Absolute();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
 
       Check.That(_mockCpu.Object.AbsoluteAddress).IsEqualTo(expectedAbsoluteAddress);
@@ -199,7 +199,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
 
       var requiresMoreCycles = _subject.AbsoluteX();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
 
       Check.That(_mockCpu.Object.AbsoluteAddress).IsEqualTo(expectedAbsoluteAddress);
@@ -229,7 +229,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
 
       var requiresMoreCycles = _subject.AbsoluteX();
-      Check.That(requiresMoreCycles).IsTrue();
+      Check.That(requiresMoreCycles).IsEqualTo(1);
       _mockCpu.Verify();
 
       Check.That(_mockCpu.Object.AbsoluteAddress).IsEqualTo(expectedAbsoluteAddress);
@@ -259,7 +259,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
 
       var requiresMoreCycles = _subject.AbsoluteY();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
 
       Check.That(_mockCpu.Object.AbsoluteAddress).IsEqualTo(expectedAbsoluteAddress);
@@ -289,7 +289,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
       _mockCpu.SetupProperty(mock => mock.AbsoluteAddress);
 
       var requiresMoreCycles = _subject.AbsoluteY();
-      Check.That(requiresMoreCycles).IsTrue();
+      Check.That(requiresMoreCycles).IsEqualTo(1);
       _mockCpu.Verify();
 
       Check.That(_mockCpu.Object.AbsoluteAddress).IsEqualTo(expectedAbsoluteAddress);
@@ -323,7 +323,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.Indirect();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -355,7 +355,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.Indirect();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -386,7 +386,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.IndirectX();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -417,7 +417,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.IndirectX();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -447,7 +447,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.IndirectY();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -477,7 +477,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.IndirectY();
-      Check.That(requiresMoreCycles).IsFalse();
+      Check.That(requiresMoreCycles).IsEqualTo(0);
       _mockCpu.Verify();
     }
 
@@ -507,7 +507,7 @@ namespace SharpNES.Core.Tests.CPU.Internals.MemoryAddressingModes {
         .Verifiable();
 
       var requiresMoreCycles = _subject.IndirectY();
-      Check.That(requiresMoreCycles).IsTrue();
+      Check.That(requiresMoreCycles).IsEqualTo(1);
       _mockCpu.Verify();
     }
   }
