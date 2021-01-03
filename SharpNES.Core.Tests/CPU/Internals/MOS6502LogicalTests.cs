@@ -3,7 +3,6 @@ using Moq;
 using NFluent;
 using SharpNES.Core.CPU;
 using SharpNES.Core.CPU.Internal;
-using System;
 using Xunit;
 
 namespace SharpNES.Core.Tests.CPU.Internals {

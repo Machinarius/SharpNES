@@ -4,7 +4,6 @@ using NFluent;
 using SharpNES.Core.CPU;
 using SharpNES.Core.CPU.Internal;
 using System;
-using System.Reflection;
 using Xunit;
 using Instructions = SharpNES.Core.CPU.Internal.MOS6502CpuInstructionExecutor;
 
@@ -22,13 +21,13 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _subjectType = _subject.GetType();
     }
 
-    private MethodInfo GetSubjectMethod(string methodName) {
+    private object InvokeSubjectMethod(string methodName) {
       var method = _subjectType.GetMethod(methodName);
       if (method == null) {
         throw new ArgumentException("The supplied method name is not defined: " + methodName);
       }
 
-      return method;
+      return method.Invoke(_subject, null);
     }
 
     [Theory]
@@ -43,7 +42,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu
         .SetupProperty(cpu => cpu.StatusRegister, desiredStatusRegister);
 
-      var extraCycles = GetSubjectMethod(methodName).Invoke(_subject, null);
+      var extraCycles = InvokeSubjectMethod(methodName);
       Check.That(extraCycles).IsEqualTo(0);
       Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(desiredStatusRegister);
     }
@@ -70,7 +69,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu
         .SetupProperty(cpu => cpu.ProgramCounter, initialProgramCounter);
 
-      var extraCycles = GetSubjectMethod(methodName).Invoke(_subject, null);
+      var extraCycles = InvokeSubjectMethod(methodName);
       Check.That(extraCycles).IsEqualTo(1);
       Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(desiredStatusRegister);
       Check.That(_mockCpu.Object.AbsoluteAddress).IsEqualTo(expectedAddress);
@@ -98,7 +97,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       _mockCpu
         .SetupProperty(cpu => cpu.ProgramCounter, initialProgramCounter);
 
-      var extraCycles = GetSubjectMethod(methodName).Invoke(_subject, null);
+      var extraCycles = InvokeSubjectMethod(methodName);
       Check.That(extraCycles).IsEqualTo(2);
     }
   }
