@@ -184,7 +184,30 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int BreakInterrupt() {
-      throw new NotImplementedException();
+      _cpu.ProgramCounter++;
+      _cpu.StatusRegister |= NESCpuFlags.DisableInterrupts;
+
+      var higherPcBits = Convert.ToByte((_cpu.ProgramCounter >> 8) & Masks.LowerBits);
+      var lowerPcBits = Convert.ToByte(_cpu.ProgramCounter & Masks.LowerBits);
+      Func<ushort> getActualStackLocation = () => Convert.ToUInt16(Constants.StackBase + _cpu.StackPointer);
+
+      _cpu.WriteToDataBus(getActualStackLocation(), higherPcBits);
+      _cpu.StackPointer--;
+
+      _cpu.WriteToDataBus(getActualStackLocation(), lowerPcBits);
+      _cpu.StackPointer--;
+
+      _cpu.StatusRegister |= NESCpuFlags.Break;
+      _cpu.WriteToDataBus(getActualStackLocation(), (byte)_cpu.StatusRegister);
+      _cpu.StackPointer--;
+
+      _cpu.StatusRegister &= ~NESCpuFlags.Break;
+
+      lowerPcBits = _cpu.ReadFromDataBus(Constants.InterruptHandlerLowAddress);
+      higherPcBits = _cpu.ReadFromDataBus(Constants.InterruptHandlerHighAddress);
+      _cpu.ProgramCounter = Convert.ToUInt16(higherPcBits << 8 | lowerPcBits);
+
+      return 0;
     }
 
     public int ClearCarry() {
@@ -401,6 +424,12 @@ namespace SharpNES.Core.CPU.Internal {
       public const ushort LowerBits = 0x00FF;
       public const ushort SignBit = 1 << 7;
       public const ushort OverflowBit = 1 << 6;
+    }
+
+    private static class Constants {
+      public const ushort StackBase = 0x0100;
+      public const ushort InterruptHandlerLowAddress = 0xFFFE;
+      public const ushort InterruptHandlerHighAddress = 0xFFFF;
     }
   }
 }

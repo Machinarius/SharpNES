@@ -6,7 +6,7 @@ namespace SharpNES.Core.CPU {
     byte AccumulatorRegister { get; set; }
     byte XRegister { get; }
     byte YRegister { get; }
-    byte StackPointer { get; }
+    byte StackPointer { get; set; }
     ushort ProgramCounter { get; set; }
     ushort AbsoluteAddress { get; set; }
     ushort RelativeAddress { get; set; }

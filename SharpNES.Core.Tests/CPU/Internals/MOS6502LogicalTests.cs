@@ -125,5 +125,31 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(expectedStatus);
     }
     #endregion
+  
+    #region BRK
+    [Fact]
+    public void BrkMustCopyThePcAndStateIntoTheStackAndSetThePcToTheInterruptHandler() {
+      _mockCpu.SetupProperty(mock => mock.StackPointer, (byte)0x10);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Negative);
+      _mockCpu.SetupProperty(mock => mock.ProgramCounter, (ushort)0x21AF);
+
+      _mockCpu.Setup(mock => mock.WriteToDataBus(0x110, 0x21)).Verifiable();
+      _mockCpu.Setup(mock => mock.WriteToDataBus(0x10F, 0xB0)).Verifiable();
+      _mockCpu.Setup(mock => 
+        mock.WriteToDataBus(0x10E, (byte)(NESCpuFlags.Negative | NESCpuFlags.Break | NESCpuFlags.DisableInterrupts))
+      ).Verifiable();
+
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(0xFFFE)).Returns(0x32);
+      _mockCpu.Setup(mock => mock.ReadFromDataBus(0xFFFF)).Returns(0xEA);
+
+      var extraCycles = _subject.BreakInterrupt();
+      Check.That(extraCycles).IsEqualTo(0);
+
+      _mockCpu.Verify();
+      Check.That(_mockCpu.Object.StackPointer).IsEqualTo(0xD);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.Negative | NESCpuFlags.DisableInterrupts);
+      Check.That(_mockCpu.Object.ProgramCounter).IsEqualTo(0xEA32);
+    }
+    #endregion
   }
 }
