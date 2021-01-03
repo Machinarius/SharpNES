@@ -112,11 +112,9 @@ namespace SharpNES.Core.CPU.Internal {
       return 0;
     }
 
-    public int BranchOnCarryClear() {
-      if (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit)) {
-        return 0;
-      }
-
+    // This is the heart of all branch instructions. They all perform the same
+    // PC calculations after they check their respective conditions.
+    private int ExecuteBranch() {
       var extraCycles = 1;
       _cpu.AbsoluteAddress = Convert.ToUInt16((_cpu.ProgramCounter + _cpu.RelativeAddress) & Masks.TwoBytes);
 
@@ -127,57 +125,38 @@ namespace SharpNES.Core.CPU.Internal {
 
       _cpu.ProgramCounter = _cpu.AbsoluteAddress;
       return extraCycles;
+    }
+
+    public int BranchOnCarryClear() {
+      if (_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit)) {
+        return 0;
+      }
+      
+      return ExecuteBranch();
     }
 
     public int BranchOnCarrySet() {
       if (!_cpu.StatusRegister.HasFlag(NESCpuFlags.CarryBit)) {
         return 0;
       }
-
-      var extraCycles = 1;
-      _cpu.AbsoluteAddress = Convert.ToUInt16((_cpu.ProgramCounter + _cpu.RelativeAddress) & Masks.TwoBytes);
-
-      var pageJumpOcurred = (_cpu.AbsoluteAddress & Masks.HigherBits) != (_cpu.ProgramCounter & Masks.HigherBits);
-      if (pageJumpOcurred) {
-        extraCycles += 1;
-      }
-
-      _cpu.ProgramCounter = _cpu.AbsoluteAddress;
-      return extraCycles;
+      
+      return ExecuteBranch();
     }
 
     public int BranchOnEqual() {
       if (!_cpu.StatusRegister.HasFlag(NESCpuFlags.Zero)) {
         return 0;
       }
-
-      var extraCycles = 1;
-      _cpu.AbsoluteAddress = Convert.ToUInt16((_cpu.ProgramCounter + _cpu.RelativeAddress) & Masks.TwoBytes);
-
-      var pageJumpOcurred = (_cpu.AbsoluteAddress & Masks.HigherBits) != (_cpu.ProgramCounter & Masks.HigherBits);
-      if (pageJumpOcurred) {
-        extraCycles += 1;
-      }
-
-      _cpu.ProgramCounter = _cpu.AbsoluteAddress;
-      return extraCycles;
+      
+      return ExecuteBranch();
     }
 
     public int BranchOnMinus() {
       if (!_cpu.StatusRegister.HasFlag(NESCpuFlags.Negative)) {
         return 0;
       }
-
-      var extraCycles = 1;
-      _cpu.AbsoluteAddress = Convert.ToUInt16((_cpu.ProgramCounter + _cpu.RelativeAddress) & Masks.TwoBytes);
-
-      var pageJumpOcurred = (_cpu.AbsoluteAddress & Masks.HigherBits) != (_cpu.ProgramCounter & Masks.HigherBits);
-      if (pageJumpOcurred) {
-        extraCycles += 1;
-      }
-
-      _cpu.ProgramCounter = _cpu.AbsoluteAddress;
-      return extraCycles;
+      
+      return ExecuteBranch();
     }
 
     public int BranchOnNotEqual() {
