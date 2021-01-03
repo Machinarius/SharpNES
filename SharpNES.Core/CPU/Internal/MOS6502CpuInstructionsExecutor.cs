@@ -91,7 +91,25 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int BitTest() {
-      throw new NotImplementedException();
+      var input = _cpu.ReadALUInputRegister();
+      var comparison = _cpu.AccumulatorRegister & input;
+      
+      var isZero = Convert.ToByte(comparison & Masks.LowerBits) == 0;
+      if (isZero) {
+        _cpu.StatusRegister |= NESCpuFlags.Zero;
+      }
+
+      var isNegative = (comparison & Masks.SignBit) > 0;
+      if (isNegative) {
+        _cpu.StatusRegister |= NESCpuFlags.Negative;
+      }
+
+      var triggersOverflow = (comparison & Masks.OverflowBit) > 0;
+      if (triggersOverflow) {
+        _cpu.StatusRegister |= NESCpuFlags.Overflow;
+      }
+
+      return 0;
     }
 
     public int BranchOnCarryClear() {
@@ -381,7 +399,8 @@ namespace SharpNES.Core.CPU.Internal {
       public const ushort TwoBytes = 0xFFFF;
       public const ushort HigherBits = 0xFF00;
       public const ushort LowerBits = 0x00FF;
-      public const ushort SignBit = 0x80;
+      public const ushort SignBit = 1 << 7;
+      public const ushort OverflowBit = 1 << 6;
     }
   }
 }

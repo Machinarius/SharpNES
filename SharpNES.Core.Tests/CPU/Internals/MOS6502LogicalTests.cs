@@ -380,5 +380,40 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       Check.That(extraCycles).IsEqualTo(2);
     }
     #endregion
+
+    #region BIT
+    [Theory]
+    [InlineData(0x00, 0xFF, true, false, false)]
+    [InlineData(0x80, 0xFF, false, true, false)]
+    [InlineData(0x40, 0xFF, false, false, true)]
+    [InlineData(0xC0, 0xFF, false, true, true)]
+    public void BitMustCompareTheAccumulatorToTheInputAndSetFlagsProperly(
+      byte aluInput,
+      byte accumulatorValue,
+      bool zeroFlag,
+      bool negativeFlag,
+      bool overflowFlag
+    ) {
+      _mockCpu.Setup(cpu => cpu.ReadALUInputRegister()).Returns(aluInput);
+      _mockCpu.SetupGet(cpu => cpu.AccumulatorRegister).Returns(accumulatorValue);
+      _mockCpu.SetupProperty(cpu => cpu.StatusRegister, NESCpuFlags.Null);
+
+      var expectedStatus = NESCpuFlags.Null;
+      if (zeroFlag) {
+        expectedStatus |= NESCpuFlags.Zero;
+      }
+
+      if (negativeFlag) {
+        expectedStatus |= NESCpuFlags.Negative;
+      }
+
+      if (overflowFlag) {
+        expectedStatus |= NESCpuFlags.Overflow;
+      }
+
+      Check.That(_subject.BitTest()).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(expectedStatus);
+    }
+    #endregion
   }
 }
