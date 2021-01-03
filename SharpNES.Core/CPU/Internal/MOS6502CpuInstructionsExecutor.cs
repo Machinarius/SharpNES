@@ -160,7 +160,11 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int BranchOnNotEqual() {
-      throw new NotImplementedException();
+      if (_cpu.StatusRegister.HasFlag(NESCpuFlags.Zero)) {
+        return 0;
+      }
+      
+      return ExecuteBranch();
     }
 
     public int BranchOnOverflowClear() {

@@ -35,6 +35,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
     [InlineData(nameof(Instructions.BranchOnCarrySet), NESCpuFlags.Overflow | NESCpuFlags.DecimalMode)]
     [InlineData(nameof(Instructions.BranchOnEqual), NESCpuFlags.Overflow | NESCpuFlags.DecimalMode)]
     [InlineData(nameof(Instructions.BranchOnMinus), NESCpuFlags.Overflow | NESCpuFlags.DecimalMode)]
+    [InlineData(nameof(Instructions.BranchOnNotEqual), NESCpuFlags.Overflow | NESCpuFlags.Zero)]
     public void BranchingMustSimplyReturnZeroIfTheRequiredFlagIsntSet(
       string methodName,
       NESCpuFlags desiredStatusRegister
@@ -52,6 +53,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
     [InlineData(nameof(Instructions.BranchOnCarrySet), NESCpuFlags.Overflow | NESCpuFlags.CarryBit)]
     [InlineData(nameof(Instructions.BranchOnEqual), NESCpuFlags.Overflow | NESCpuFlags.Zero)]
     [InlineData(nameof(Instructions.BranchOnMinus), NESCpuFlags.Overflow | NESCpuFlags.Negative)]
+    [InlineData(nameof(Instructions.BranchOnNotEqual), NESCpuFlags.Overflow | NESCpuFlags.DecimalMode)]
     public void BranchingMustSetThePCAndAbsAddressRegistersToJumpToRelativeAddressIfTheRequiredFlagIsSet(
       string methodName,
       NESCpuFlags desiredStatusRegister
@@ -81,6 +83,7 @@ namespace SharpNES.Core.Tests.CPU.Internals {
     [InlineData(nameof(Instructions.BranchOnCarrySet), NESCpuFlags.Overflow | NESCpuFlags.CarryBit)]
     [InlineData(nameof(Instructions.BranchOnEqual), NESCpuFlags.Overflow | NESCpuFlags.Zero)]
     [InlineData(nameof(Instructions.BranchOnMinus), NESCpuFlags.Overflow | NESCpuFlags.Negative)]
+    [InlineData(nameof(Instructions.BranchOnNotEqual), NESCpuFlags.Overflow | NESCpuFlags.DecimalMode)]
     public void BranchingMustRequireAnAdditionalCycleIfThereIsAPageJump(
       string methodName,
       NESCpuFlags desiredStatusRegister
