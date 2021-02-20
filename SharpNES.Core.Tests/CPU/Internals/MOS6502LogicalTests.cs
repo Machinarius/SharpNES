@@ -169,5 +169,23 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DisableInterrupts);
     }
     #endregion
+
+    #region CLD
+    [Fact]
+    public void CldMustClearTheDecimalFlagAndReturnZeroCycles() {
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode | NESCpuFlags.DisableInterrupts);
+      var extraCycles = _subject.ClearDecimal();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DisableInterrupts);
+    }
+
+    [Fact]
+    public void CldMustBeANoOpIfTheDecimalFlagIsNotSet() {
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DisableInterrupts);
+      var extraCycles = _subject.ClearDecimal();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DisableInterrupts);
+    }
+    #endregion
   }
 }

@@ -224,7 +224,8 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int ClearDecimal() {
-      throw new NotImplementedException();
+      _cpu.StatusRegister &= ~NESCpuFlags.DecimalMode;
+      return 0;
     }
 
     public int ClearInterruptDisable() {
