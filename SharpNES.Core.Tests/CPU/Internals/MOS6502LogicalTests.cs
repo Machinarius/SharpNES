@@ -151,5 +151,23 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       Check.That(_mockCpu.Object.ProgramCounter).IsEqualTo(0xEA32);
     }
     #endregion
+
+    #region CLC
+    [Fact]
+    public void ClcMustClearTheCarryFlagAndReturnZeroCycles() {
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.CarryBit | NESCpuFlags.DisableInterrupts);
+      var extraCycles = _subject.ClearCarry();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DisableInterrupts);
+    }
+
+    [Fact]
+    public void ClcMustBeANoOpIfTheCarryFlagIsNotSet() {
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DisableInterrupts);
+      var extraCycles = _subject.ClearCarry();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DisableInterrupts);
+    }
+    #endregion
   }
 }

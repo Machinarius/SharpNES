@@ -219,7 +219,8 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int ClearCarry() {
-      throw new NotImplementedException();
+      _cpu.StatusRegister &= ~NESCpuFlags.CarryBit;
+      return 0;
     }
 
     public int ClearDecimal() {
