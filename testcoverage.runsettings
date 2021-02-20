@@ -6,7 +6,7 @@
       <!-- Reference: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/VSTestIntegration.md -->
       <DataCollector friendlyName="XPlat code coverage">  
         <Configuration>
-          <Format>json,cobertura,lcov,teamcity,opencover</Format>
+          <Format>opencover</Format>
           <UseSourceLink>true</UseSourceLink>
         </Configuration>  
       </DataCollector>

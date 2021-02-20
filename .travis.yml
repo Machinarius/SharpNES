@@ -21,4 +21,4 @@ script:
 - dotnet tool restore
 - dotnet test --results-directory ./TestResults --collect:"XPlat Code Coverage" --settings ./testcoverage.runsettings
 - find ./TestResults -mindepth 2 -type f -print -exec mv {} ./TestResults/ \; 
-- dotnet tool run csmacnz.Coveralls --opencover -i ./TestResults/coverage.opencover.xml --commitId $TRAVIS_COMMIT --commitMessage "${TRAVIS_COMMIT_MESSAGE}" --commitBranch $TRAVIS_BRANCH --jobId $TRAVIS_JOB_ID 
+- dotnet tool run csmacnz.Coveralls --opencover -i ./TestResults/coverage.opencover.xml --commitId $TRAVIS_COMMIT --commitMessage "${TRAVIS_COMMIT_MESSAGE}" --commitAuthor "$(git log -1 --pretty=format:'%an')" --commitEmail "$(git log -1 --pretty=format:'%ae')" --commitBranch $TRAVIS_BRANCH --jobId $TRAVIS_JOB_ID 
