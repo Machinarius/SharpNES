@@ -197,7 +197,7 @@ namespace SharpNES.Core.CPU.Internal {
 
       var higherPcBits = Convert.ToByte((_cpu.ProgramCounter >> 8) & Masks.LowerBits);
       var lowerPcBits = Convert.ToByte(_cpu.ProgramCounter & Masks.LowerBits);
-      Func<ushort> getActualStackLocation = () => Convert.ToUInt16(Constants.StackBase + _cpu.StackPointer);
+      ushort getActualStackLocation() => Convert.ToUInt16(Constants.StackBase + _cpu.StackPointer);
 
       _cpu.WriteToDataBus(getActualStackLocation(), higherPcBits);
       _cpu.StackPointer--;
