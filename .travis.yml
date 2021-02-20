@@ -2,6 +2,7 @@ language: csharp
 solution: SharpNES.sln
 mono: none
 dotnet: 3.1
+os: linux
 dist: focal
 
 addons:
@@ -18,9 +19,6 @@ addons:
 script:
 - dotnet restore
 - dotnet tool restore
-- dotnet test --results-directory .\TestResults --collect:"XPlat Code Coverage" --settings .\coverage.runsettings
+- dotnet test --results-directory .\TestResults --collect:"XPlat Code Coverage" --settings ./testcoverage.runsettings
 - find ./TestResults -mindepth 2 -type f -print -exec mv {} ./TestResults/ \; 
 - dotnet tool run csmacnz.Coveralls --opencover -i ./TestResults/coverage.opencover.xml --commitId $TRAVIS_COMMIT --commitMessage "$TRAVIS_COMMIT_MESSAGE" --commitBranch $TRAVIS_BRANCH --jobId $TRAVIS_JOB_ID 
-
-# Apparently we have to feed git data through the command line args? :(
-# dotnet tool run csmacnz.Coveralls --opencover -i .\SharpNES.Core.Tests\TestResults\8faeb0c6-fa6a-4023-b87f-f102d35d9aeb\coverage.cobertura.xml --useRelativePaths --commitId f6e33fd --commitBranch master --commitAuthor machinarius --commitEmail machinarius92@gmail.com --commitMessage "NuGet Updates"
