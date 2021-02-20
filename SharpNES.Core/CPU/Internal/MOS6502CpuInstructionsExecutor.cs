@@ -233,7 +233,8 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int ClearOverflow() {
-      throw new NotImplementedException();
+      _cpu.StatusRegister &= ~NESCpuFlags.Overflow;
+      return 0;
     }
 
     public int CompareWithAccumulator() {

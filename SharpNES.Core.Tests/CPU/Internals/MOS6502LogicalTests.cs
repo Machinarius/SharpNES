@@ -187,5 +187,23 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DisableInterrupts);
     }
     #endregion
+
+    #region CLV
+    [Fact]
+    public void ClvMustClearTheOverflowFlagAndReturnZeroCycles() {
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.Overflow | NESCpuFlags.DisableInterrupts);
+      var extraCycles = _subject.ClearOverflow();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DisableInterrupts);
+    }
+
+    [Fact]
+    public void ClvMustBeANoOpIfTheOverflowFlagIsNotSet() {
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DisableInterrupts);
+      var extraCycles = _subject.ClearOverflow();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DisableInterrupts);
+    }
+    #endregion
   }
 }
