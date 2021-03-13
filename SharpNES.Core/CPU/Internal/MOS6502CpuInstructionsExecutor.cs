@@ -310,7 +310,18 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int ExclusiveOr() {
-      throw new NotImplementedException();
+      var aluInput = _cpu.ReadALUInputRegister();
+      _cpu.AccumulatorRegister ^= aluInput;
+      
+      if (_cpu.AccumulatorRegister == 0) {
+        _cpu.StatusRegister |= NESCpuFlags.Zero;
+      }
+
+      if ((_cpu.AccumulatorRegister & Masks.SignBit) == Masks.SignBit) {
+        _cpu.StatusRegister |= NESCpuFlags.Negative;
+      }
+
+      return 1;
     }
 
     public int IllegalOpCode() {

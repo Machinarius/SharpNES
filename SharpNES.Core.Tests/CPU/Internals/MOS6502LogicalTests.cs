@@ -205,5 +205,43 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DisableInterrupts);
     }
     #endregion
+
+    #region EOR
+    [Fact]
+    public void EorMustReadTheAluInputXorItWithTheAccumulator() {
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(0x25);
+      _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0x15);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode);
+
+      var extraCycles = _subject.ExclusiveOr();
+      Check.That(extraCycles).IsEqualTo(1);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode);
+      Check.That(_mockCpu.Object.AccumulatorRegister).IsEqualTo(0x30);
+    }
+
+    [Fact]
+    public void EorMustSetTheZeroFlagIfTheResultIsZero() {
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(0x25);
+      _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0x25);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode);
+
+      var extraCycles = _subject.ExclusiveOr();
+      Check.That(extraCycles).IsEqualTo(1);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode | NESCpuFlags.Zero);
+      Check.That(_mockCpu.Object.AccumulatorRegister).IsEqualTo(0);
+    }
+
+    [Fact]
+    public void EorMustSetTheNegativeFlagIfTheResultIsNegative() {
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(0x80);
+      _mockCpu.SetupProperty(mock => mock.AccumulatorRegister, (byte)0x1);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode);
+
+      var extraCycles = _subject.ExclusiveOr();
+      Check.That(extraCycles).IsEqualTo(1);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode | NESCpuFlags.Negative);
+      Check.That(_mockCpu.Object.AccumulatorRegister).IsEqualTo(0x81);
+    }
+    #endregion
   }
 }
