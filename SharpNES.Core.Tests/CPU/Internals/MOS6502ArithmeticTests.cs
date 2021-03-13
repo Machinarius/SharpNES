@@ -420,6 +420,8 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       var extraCycles = _subject.Decrement();
       Check.That(extraCycles).IsEqualTo(0);
       Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode | NESCpuFlags.Zero);
+
+      _mockCpu.Verify();
     }
 
     [Fact]
@@ -432,6 +434,56 @@ namespace SharpNES.Core.Tests.CPU.Internals {
       var extraCycles = _subject.Decrement();
       Check.That(extraCycles).IsEqualTo(0);
       Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode | NESCpuFlags.Negative);
+
+      _mockCpu.Verify();
+    }
+    #endregion
+
+    #region DEX
+    [Fact]
+    public void DexMustReadTheXRegisterDrecrementItAndSetFlagsAccordingly() {
+      _mockCpu.SetupProperty(mock => mock.XRegister, (byte)0x1);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode);
+
+      var extraCycles = _subject.DecrementX();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode | NESCpuFlags.Zero);
+      Check.That(_mockCpu.Object.XRegister).IsEqualTo(0);
+    }
+
+    [Fact]
+    public void DexMustSetTheNegativeFlagIfTheResultIsNegative() {
+      _mockCpu.SetupProperty(mock => mock.XRegister, (byte)0xFF);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode);
+
+      var extraCycles = _subject.DecrementX();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode | NESCpuFlags.Negative);
+      Check.That(_mockCpu.Object.XRegister).IsEqualTo(0xFE);
+    }
+    #endregion
+
+    #region DEY
+    [Fact]
+    public void DeyMustReadTheXRegisterDrecrementItAndSetFlagsAccordingly() {
+      _mockCpu.SetupProperty(mock => mock.YRegister, (byte)0x1);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode);
+
+      var extraCycles = _subject.DecrementY();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode | NESCpuFlags.Zero);
+      Check.That(_mockCpu.Object.YRegister).IsEqualTo(0);
+    }
+
+    [Fact]
+    public void DeyMustSetTheNegativeFlagIfTheResultIsNegative() {
+      _mockCpu.SetupProperty(mock => mock.YRegister, (byte)0xFF);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode);
+
+      var extraCycles = _subject.DecrementY();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode | NESCpuFlags.Negative);
+      Check.That(_mockCpu.Object.YRegister).IsEqualTo(0xFE);
     }
     #endregion
 

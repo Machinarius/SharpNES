@@ -284,11 +284,29 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int DecrementX() {
-      throw new NotImplementedException();
+      _cpu.XRegister--;
+      if (_cpu.XRegister == 0) {
+        _cpu.StatusRegister |= NESCpuFlags.Zero;
+      }
+
+      if ((_cpu.XRegister & Masks.SignBit) == Masks.SignBit) {
+        _cpu.StatusRegister |= NESCpuFlags.Negative;
+      }
+
+      return 0;
     }
 
     public int DecrementY() {
-      throw new NotImplementedException();
+      _cpu.YRegister--;
+      if (_cpu.YRegister == 0) {
+        _cpu.StatusRegister |= NESCpuFlags.Zero;
+      }
+
+      if ((_cpu.YRegister & Masks.SignBit) == Masks.SignBit) {
+        _cpu.StatusRegister |= NESCpuFlags.Negative;
+      }
+
+      return 0;
     }
 
     public int ExclusiveOr() {
