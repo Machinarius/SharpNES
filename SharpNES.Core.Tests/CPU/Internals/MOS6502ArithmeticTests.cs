@@ -376,6 +376,39 @@ namespace SharpNES.Core.Tests.CPU.Internals {
     }
     #endregion
 
+    #region CPY
+    [Theory]
+    [InlineData(0x10, 0x10, true, true, false)]
+    [InlineData(0x50, 0x60, false, false, true)]
+    [InlineData(0x60, 0x50, true, false, false)]
+    public void CpyMustCompareTheXRegisterToTheAccumulatorAndSetFlagsAppropriately(
+      byte yValue, byte aluInput, bool expectedCarry,
+      bool expectedZero, bool expectedNegative
+    ) {
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(aluInput);
+      _mockCpu.SetupProperty(mock => mock.YRegister, yValue);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode);
+
+      var extraCycles = _subject.CompareWithY();
+      Check.That(extraCycles).IsEqualTo(1);
+
+      var expectedStatus = NESCpuFlags.DecimalMode;
+      if (expectedCarry) {
+        expectedStatus |= NESCpuFlags.CarryBit;
+      }
+
+      if (expectedZero) {
+        expectedStatus |= NESCpuFlags.Zero;
+      }
+
+      if (expectedNegative) {
+        expectedStatus |= NESCpuFlags.Negative;
+      }
+
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(expectedStatus);
+    }
+    #endregion
+
     #region TestData
 #pragma warning disable CA1812
     // Taken from http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html

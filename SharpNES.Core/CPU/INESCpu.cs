@@ -5,7 +5,7 @@ namespace SharpNES.Core.CPU {
     NESCpuFlags StatusRegister { get; set; }
     byte AccumulatorRegister { get; set; }
     byte XRegister { get; set; }
-    byte YRegister { get; }
+    byte YRegister { get; set; }
     byte StackPointer { get; set; }
     ushort ProgramCounter { get; set; }
     ushort AbsoluteAddress { get; set; }
