@@ -268,7 +268,19 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int Decrement() {
-      throw new NotImplementedException();
+      var aluInput = _cpu.ReadALUInputRegister();
+      var result = aluInput - 1;
+      _cpu.WriteToDataBus(_cpu.AbsoluteAddress, Convert.ToByte(result & Masks.LowerBits));
+      
+      if ((result & Masks.LowerBits) == 0) {
+        _cpu.StatusRegister |= NESCpuFlags.Zero;
+      }
+
+      if ((result & Masks.SignBit) == Masks.SignBit) {
+        _cpu.StatusRegister |= NESCpuFlags.Negative;
+      }
+
+      return 0;
     }
 
     public int DecrementX() {

@@ -409,6 +409,32 @@ namespace SharpNES.Core.Tests.CPU.Internals {
     }
     #endregion
 
+    #region DEC
+    [Fact]
+    public void DecMustReadTheAluInputDrecrementItAndSetFlagsAccordingly() {
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(0x1);
+      _mockCpu.Setup(mock => mock.WriteToDataBus(0x100, 0)).Verifiable();
+      _mockCpu.SetupProperty(mock => mock.AbsoluteAddress, (ushort)0x100);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode);
+
+      var extraCycles = _subject.Decrement();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode | NESCpuFlags.Zero);
+    }
+
+    [Fact]
+    public void DecMustSetTheNegativeFlagIfTheResultIsNegative() {
+      _mockCpu.Setup(mock => mock.ReadALUInputRegister()).Returns(0xFF);
+      _mockCpu.Setup(mock => mock.WriteToDataBus(0x100, 0xFE)).Verifiable();
+      _mockCpu.SetupProperty(mock => mock.AbsoluteAddress, (ushort)0x100);
+      _mockCpu.SetupProperty(mock => mock.StatusRegister, NESCpuFlags.DecimalMode);
+
+      var extraCycles = _subject.Decrement();
+      Check.That(extraCycles).IsEqualTo(0);
+      Check.That(_mockCpu.Object.StatusRegister).IsEqualTo(NESCpuFlags.DecimalMode | NESCpuFlags.Negative);
+    }
+    #endregion
+
     #region TestData
 #pragma warning disable CA1812
     // Taken from http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
