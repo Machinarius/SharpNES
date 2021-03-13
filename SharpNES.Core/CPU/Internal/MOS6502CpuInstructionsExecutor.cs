@@ -248,7 +248,13 @@ namespace SharpNES.Core.CPU.Internal {
     }
 
     public int CompareWithX() {
-      throw new NotImplementedException();
+      var aluInput = _cpu.ReadALUInputRegister();
+      var result = _cpu.XRegister - aluInput;
+      if (_cpu.XRegister >= aluInput) _cpu.StatusRegister |= NESCpuFlags.CarryBit;
+      if ((result & Masks.LowerBits) == 0) _cpu.StatusRegister |= NESCpuFlags.Zero;
+      if ((result & Masks.SignBit) == Masks.SignBit) _cpu.StatusRegister |= NESCpuFlags.Negative;
+
+      return 1;
     }
 
     public int CompareWithY() {

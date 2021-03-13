@@ -4,7 +4,7 @@ namespace SharpNES.Core.CPU {
   public interface INESCpu {
     NESCpuFlags StatusRegister { get; set; }
     byte AccumulatorRegister { get; set; }
-    byte XRegister { get; }
+    byte XRegister { get; set; }
     byte YRegister { get; }
     byte StackPointer { get; set; }
     ushort ProgramCounter { get; set; }
